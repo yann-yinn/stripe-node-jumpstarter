@@ -50,6 +50,11 @@ const port = process.env.PORT || 3001;
    */
   app.use(stripeRoutes);
 
+  /**
+   * Serve Vue.js app (un build est obligatoire avant de pouvoir le servir)
+   */
+  app.use(express.static("front/dist"));
+
   app.get("/status", userManagement.auth.required, (req, res) => {
     console.log("req.user", req.user);
     res.send({ status: "running" });
