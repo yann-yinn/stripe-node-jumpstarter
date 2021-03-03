@@ -19,7 +19,7 @@ export default {
         password,
       });
     },
-    async login({ commit }, { username, password }) {
+    login({ commit }, { username, password }) {
       return api
         .post("/login", {
           username,
@@ -28,6 +28,7 @@ export default {
         .then((res) => {
           localStorage.setItem("user", JSON.stringify(res.data.user));
           api.defaults.headers.common["Authorization"] = res.data.user.token;
+          commit("user", res.data.user);
           return res.data.user;
         });
     },

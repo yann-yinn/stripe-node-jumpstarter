@@ -102,13 +102,19 @@ export default {
           password: this.password,
         })
         .then(() => {
-          this.$toasted.show(
-            `Hello ${this.$store.state.auth.user.username}, you are now logged in!`
-          );
+          this.$toasted.show(`You are now logged in!`);
           this.$router.push("/");
         })
         .catch((error) => {
-          this.error = error.response.data.error;
+          console.log("error", error);
+          // form errors
+          if (error.response.status == "422") {
+            this.error = error.response.data.error;
+          }
+          // any others errors
+          else {
+            this.error = error;
+          }
         });
     },
   },
