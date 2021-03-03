@@ -17,6 +17,9 @@
       </div>
       <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div v-show="error" class="bg-red-100 text-red-400 p-3 mb-4">
+            {{ error }}
+          </div>
           <form @submit.prevent="onFormSubmit" method="POST">
             <div>
               <label
@@ -78,6 +81,7 @@ export default {
   name: "Login",
   data() {
     return {
+      error: null,
       username: "",
       password: "",
     };
@@ -90,15 +94,22 @@ export default {
     }
   },
   methods: {
-    async onFormSubmit() {
-      await this.$store.dispatch("auth/login", {
-        username: this.username,
-        password: this.password,
-      });
-      this.$toasted.show(
-        `Hello ${this.$store.state.auth.user.username}, you are now logged in!`
-      );
-      this.$router.push("/");
+    onFormSubmit() {
+      this.error = null;
+      this.$store
+        .dispatch("auth/login", {
+          username: this.username,
+          password: this.password,
+        })
+        .then(() => {
+          this.$toasted.show(
+            `Hello ${this.$store.state.auth.user.username}, you are now logged in!`
+          );
+          this.$router.push("/");
+        })
+        .catch((error) => {
+          this.error = error.response.data.error;
+        });
     },
   },
 };
