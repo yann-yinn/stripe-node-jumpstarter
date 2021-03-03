@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "npx vue-cli-service build",
+    "build": "vue-cli-service build",
     "dev": "vue-cli-service serve"
   },
   "dependencies": {
+    "@vue/cli-service": "^4.5.11",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
