@@ -48,11 +48,9 @@ export default {
     StripePricePlanList,
   },
   created() {
-    /*
     api.get("/userinfo").then((r) => {
       console.log("r", r);
     });
-    */
   },
   methods: {
     onGetStartedClick() {

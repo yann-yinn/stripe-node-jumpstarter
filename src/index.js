@@ -5,6 +5,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const userManagement = require("express-user-management");
 const { connect, db } = require("./utils/db");
+ObjectId = require("mongodb").ObjectID;
 
 // se connecter à notre base de données Mongo
 connect();
@@ -60,7 +61,10 @@ app.use(stripeRoutes);
   });
 
   app.get("/userinfo", userManagement.auth.required, async (req, res) => {
-    res.send({ user: req.user });
+    const user = await db()
+      .collection("users")
+      .findOne({ _id: ObjectId(req.user.id) });
+    res.send({ user: user });
   });
 
   /**
