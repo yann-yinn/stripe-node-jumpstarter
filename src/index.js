@@ -1,17 +1,31 @@
 require("dotenv").config();
 const express = require("express");
-const app = express();
 const stripeRoutes = require("./stripe/routes");
-
 const cors = require("cors");
-app.use(cors());
-
 const bodyParser = require("body-parser");
+const userManagement = require("express-user-management");
+const { connect, db } = require("./utils/db");
+
+// se connecter à notre base de données Mongo
+connect();
+
+// configurer notre serveur HTTP
+const app = express();
+app.use(cors());
 app.use(bodyParser.json({ limit: "5mb" }));
 
-const userManagement = require("express-user-management");
+app.get("/", (req, res) => {
+  res.send({ status: "running" });
+});
 
-const port = process.env.PORT || 3001;
+/**
+ * Ajouter les routes d'API pour Stripe
+ */
+app.use(stripeRoutes);
+
+/**
+ * Configurer la gestion des utilisateurs
+ */
 (async () => {
   await userManagement.init(app, {
     mongoUrl: process.env.MONGO_URL,
@@ -45,20 +59,15 @@ const port = process.env.PORT || 3001;
     },
   });
 
-  /**
-   * Ajouter les routes d'API pour Stripe
-   */
-  app.use(stripeRoutes);
+  app.get("/userinfo", userManagement.auth.required, async (req, res) => {
+    res.send({ user: req.user });
+  });
 
   /**
-   * Serve Vue.js app (un build est obligatoire avant de pouvoir le servir)
+   * Servir notre front-end (un build est obligatoire avant de pouvoir le servir)
    */
   app.use(express.static("front/dist"));
 
-  app.get("/status", userManagement.auth.required, (req, res) => {
-    console.log("req.user", req.user);
-    res.send({ status: "running" });
-  });
   app.listen(process.env.PORT, () => {
     console.log(`server app listening on port ${process.env.PORT}!`);
   });

@@ -41,10 +41,18 @@
 
 <script>
 import StripePricePlanList from "@/modules/stripe/components/StripePricePlanList";
+import api from "@/utils/api";
 
 export default {
   components: {
     StripePricePlanList,
+  },
+  created() {
+    /*
+    api.get("/userinfo").then((r) => {
+      console.log("r", r);
+    });
+    */
   },
   methods: {
     onGetStartedClick() {
