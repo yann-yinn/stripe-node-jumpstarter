@@ -18,7 +18,9 @@
 
       <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-
+          <div v-show="error" class="bg-red-100 text-red-400 p-3 mb-4">
+            {{ error }}
+          </div>
             <div>
               <label
                 for="username"
@@ -97,19 +99,33 @@ export default {
   name: "Register",
   data() {
     return {
+      error: "",
       username: "",
       email: "",
       password: "",
     };
   },
   methods: {
-    async register() {
-      await this.$store.dispatch("auth/register", {
+    register() {
+      this.$store.dispatch("auth/register", {
         username: this.username,
         email: this.email,
         password: this.password,
       })
-      this.$router.push("/")
+      .then(() => {
+        this.$router.push("/")
+      })
+      .catch((error) => {
+          console.log("error", error);
+          // form errors
+          if (error.response.status == "422") {
+            this.error = error.response.data.error;
+          }
+          // any others errors
+          else {
+            this.error = error;
+          }
+        })
     },
   },
 };
