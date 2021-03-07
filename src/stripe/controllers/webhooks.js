@@ -1,5 +1,6 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
+const { db } = require("../../utils/db");
 
 module.exports = async (request, response) => {
   const sig = request.headers["stripe-signature"];
@@ -37,6 +38,11 @@ module.exports = async (request, response) => {
          * - (optionnel) l'id du plan choisi: event.metadata.price
          * - (optionnel) le status de l'abonnement (ex: "user.subscriptionStatus = ACTIVE")
          *==============================*/
+
+        const user = await db()
+          .collection("users")
+          .findOne({ _id: ObjectId(session.client_reference_id) });
+        console.log("user", user);
 
         /* EXAMPLE:
         user.update({
