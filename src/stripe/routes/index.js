@@ -11,18 +11,16 @@ router.get("/api/stripe/plans", stripeController.plans);
 
 router.post(
   "/api/stripe/create-checkout-session",
-  bodyParser.json(),
   stripeController.createCheckoutSession
 );
 
 router.post(
   "/api/stripe/create-customer-portal-session",
-  bodyParser.json(),
   stripeController.createCustomerPortalSession
 );
 
 /**
- * !! ATTENTION, request.body ne doit PAS être modifié par un middleware express,
+ * !! ATTENTION, request.body ne doit JAMAIS être modifié par un middleware express,
  * sinon la vérification de signature de stripe signature échoue !!
  */
 router.post(

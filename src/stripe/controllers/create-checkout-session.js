@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
        */
 
       // EXEMPLE:
-      // client_reference_id: user.id,
+      // client_reference_id: req.user.id,
 
       /**
        * propriété "metadata"

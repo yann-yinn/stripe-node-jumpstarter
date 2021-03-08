@@ -3,20 +3,29 @@ const express = require("express");
 const stripeRoutes = require("./stripe/routes");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const userManagement = require("express-user-management");
+const userManagement = require("./utils/userManagement");
 const { connect, db } = require("./utils/db");
 ObjectId = require("mongodb").ObjectID;
-
-// se connecter à notre base de données Mongo
-connect();
 
 // configurer notre serveur HTTP
 const app = express();
 app.use(cors());
-app.use(bodyParser.json({ limit: "5mb" }));
 
-app.get("/", (req, res) => {
-  res.send({ status: "running" });
+// se connecter à notre base de données Mongo
+connect();
+
+// démarrer l'API express pour l'authentification
+(async () => {
+  await userManagement.init(app);
+})();
+
+app.use((req, res, next) => {
+  // ne PAS utiliser le parser JSON automatiquement pour les webhooks!
+  if (req.originalUrl === "/api/stripe/webhooks") {
+    next();
+  } else {
+    bodyParser.json({ limit: "5mb" })(req, res, next);
+  }
 });
 
 /**
@@ -24,55 +33,22 @@ app.get("/", (req, res) => {
  */
 app.use(stripeRoutes);
 
+app.get("/", (req, res) => {
+  res.send({ status: "running" });
+});
+
+app.get("/userinfo", async (req, res) => {
+  const user = await db()
+    .collection("users")
+    .findOne({ _id: ObjectId(req.user.id) });
+  res.send({ user: user });
+});
+
 /**
- * Configurer la gestion des utilisateurs
+ * Servir notre front-end (un build est obligatoire avant de pouvoir le servir)
  */
-(async () => {
-  await userManagement.init(app, {
-    mongoUrl: process.env.MONGO_URL,
-    activationRequired: false,
-    usersTable: "users",
-    jwtSecret: process.env.JWT_SECRET || "secret",
-    passwordResetAdress: process.env.BASE_URL + "/passwordReset/",
-    accountActivationAdress: process.env.BASE_URL,
-    apiKey: {
-      table: "projects",
-      documentKey: "apiKey.apiKey",
-    },
-    mails: {
-      apiKey: process.env.SENDGRID_API_KEY,
-      activation: {
-        subject: "Activate your account!",
-        sender: process.env.EMAIL_SENDER,
-        body: `Almost done!
-               Please click this link to activate your account!
+app.use(express.static("front/dist"));
 
-               https://social-gallery.net/activate-email?{{user.activation.code.apiKey}}`,
-      },
-      passwordReset: {
-        subject: "Password reset link",
-        sender: "accounts@gwenp.fr",
-        body: `You are receiving this because you (or someone else) have requested the reset of the password for your account.
-              Please click on the following link, or paste this into your browser to complete the process:
-              {{passwordResetAdress}}?{{token}}
-              If you did not request this, please ignore this email and your password will remain unchanged.`,
-      },
-    },
-  });
-
-  app.get("/userinfo", userManagement.auth.required, async (req, res) => {
-    const user = await db()
-      .collection("users")
-      .findOne({ _id: ObjectId(req.user.id) });
-    res.send({ user: user });
-  });
-
-  /**
-   * Servir notre front-end (un build est obligatoire avant de pouvoir le servir)
-   */
-  app.use(express.static("front/dist"));
-
-  app.listen(process.env.PORT, () => {
-    console.log(`server app listening on port ${process.env.PORT}!`);
-  });
-})();
+app.listen(process.env.PORT, () => {
+  console.log(`server app listening on port ${process.env.PORT}!`);
+});
