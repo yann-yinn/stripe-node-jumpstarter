@@ -47,13 +47,6 @@ export default {
   components: {
     StripePricePlanList,
   },
-  created() {
-    /*
-    api.get("/userinfo").then((r) => {
-      console.log("r", r);
-    });
-    */
-  },
   methods: {
     onGetStartedClick() {
       this.$router.push("/register");

@@ -41,7 +41,6 @@ module.exports = async (request, response) => {
     // Le paiement est un succès et l'abonnement a été crée!
     case "checkout.session.completed":
       const session = event.data.object;
-
       console.log(JSON.stringify(session, 0, 2));
 
       /*==============================

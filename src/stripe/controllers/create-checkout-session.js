@@ -7,7 +7,6 @@ const stripe = require("stripe")(config.stripeSecretKey);
  */
 module.exports = async (req, res) => {
   const { priceId } = req.body;
-  console.log("req.user", req.user);
 
   if (!priceId) {
     res.status(400);
