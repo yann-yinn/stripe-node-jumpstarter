@@ -8,7 +8,11 @@ const express = require("express");
 const router = express.Router();
 const userManagement = require("../../utils/userManagement");
 
-router.get("/api/stripe/plans", stripeController.plans);
+router.get(
+  "/api/stripe/plans",
+  userManagement.get().auth.required,
+  stripeController.plans
+);
 
 router.post(
   "/api/stripe/create-checkout-session",

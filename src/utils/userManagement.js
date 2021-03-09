@@ -8,6 +8,7 @@ async function init(app) {
     jwtSecret: process.env.JWT_SECRET || "secret",
     passwordResetAdress: process.env.BASE_URL + "/passwordReset/",
     accountActivationAdress: process.env.BASE_URL,
+    additionalTokenKeys: ["stripeCustomerId"],
     apiKey: {
       table: "projects",
       documentKey: "apiKey.apiKey",

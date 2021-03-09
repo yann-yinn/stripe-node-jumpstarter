@@ -1,5 +1,6 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
+const { db } = require("../../utils/db");
 
 /**
  * Retourne une URL qui permet aux clients de se rendre sur son espace
@@ -14,10 +15,13 @@ module.exports = async (req, res) => {
    * @STRIPE_TO_COMPLETE
    *
    * Retrouvez depuis votre base de données le customerId de votre utilisateur,
-   * pour pouvoir générer son lien de session vers son espace de gestion
+   * pour pouvoir générer son lien de session vers son espace de gestion des abonnements!
    *=============================*/
 
-  // customerId = req.user.id
+  const fullUser = await db()
+    .collection("users")
+    .findOne({ _id: ObjectId(req.user.id) });
+  customerId = fullUser.stripeCustomerId;
 
   /*==============================
    * @END_STRIPE_TO_COMPLETE
