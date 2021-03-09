@@ -1,19 +1,23 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
 
+/**
+ * Retourne une URL qui permet aux clients de se rendre sur son espace
+ * de gestion des abonnements : https://stripe.com/docs/billing/subscriptions/customer-portal
+ * @param {*} req
+ * @param {*} res
+ */
 module.exports = async (req, res) => {
   let customerId;
 
   /*==============================
    * @STRIPE_TO_COMPLETE
    *
-   * Ici vous devez retrouvez depuis votre base de données locale
-   * le customerId de votre utilisateur actuellement connecté,
-   * pour pouvoir lui générer son lien de session vers le portail client
+   * Retrouvez depuis votre base de données le customerId de votre utilisateur,
+   * pour pouvoir générer son lien de session vers son espace de gestion
    *=============================*/
 
-  // const user = getCurrentUser();
-  // customerId = user.stripeCustomerId;
+  // customerId = req.user.id
 
   /*==============================
    * @END_STRIPE_TO_COMPLETE
@@ -29,7 +33,7 @@ module.exports = async (req, res) => {
 
   try {
     // l'url vers laquelle sera redirigée le visiteur une fois
-    // qu'il a fini de gérer son abonnement
+    // qu'il a fini de gérer son abonnement, par exemple son compte.
     const returnUrl = config.stripeBillingReturnUrl;
 
     const portalsession = await stripe.billingPortal.sessions.create({

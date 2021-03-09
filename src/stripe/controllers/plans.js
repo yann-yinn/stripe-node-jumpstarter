@@ -1,6 +1,10 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
 
+/**
+ * Récupérer la liste complète des plans à afficher sur le front-end.
+ * voir dans le fichier .env la variable STRIPE_PRICES_IDS
+ */
 module.exports = async (req, res) => {
   try {
     const plans = await Promise.all(
