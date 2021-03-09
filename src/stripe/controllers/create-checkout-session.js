@@ -3,11 +3,11 @@ const stripe = require("stripe")(config.stripeSecretKey);
 
 /**
  * Créer une nouvelle session Stripe: tout processus de paiement
- * comment par appeler ce endpoint. Le front-end se sert du sessionId retourné
- * pour appeler la fonction Stripe.redirectToCheckout({sessionId})
+ * commence en appelant ce endpoint.
  */
 module.exports = async (req, res) => {
   const { priceId } = req.body;
+  console.log("req.user", req.user);
 
   if (!priceId) {
     res.status(400);
@@ -43,36 +43,34 @@ module.exports = async (req, res) => {
        * propriété "customer"
        *
        * Si on a déjà un customerId stripe pour le user qui passe commande,
-       * on doit le renseigner ici pour éviter de créer un nouveau
-       * client Stripe systématiquement!
+       * on doit le renseigner ici pour que Stripe reconnaisse le client
+       * et ne crée pas un nouveau client à chaque nouvelle commande.
        */
 
       // EXEMPLE
-      // customer: user.customerId
+      // customer: req.user.id,
 
       /**
        * propriété "client_reference_id"
        *
-       * Passer ici l'id de votre utilisateur.
-       * Ainsi, dans le webhook "checkout.session.completed", vous ainsi
-       * retrouver votre id utilisateur local en inspectant la client_reference_id
+       * Passez ici l'id de votre utilisateur.
+       * Ainsi, dans le webhook "checkout.session.completed", vous pourrez
+       * retrouver votre id utilisateur local en inspectant la clef client_reference_id
        */
 
       // EXEMPLE:
-      // client_reference_id: req.user.id,
+      client_reference_id: req.user.id,
 
       /**
        * propriété "metadata"
        *
-       * La clef metadata pourra être retrouvée dans le webhook "checkout.session.completed"
-       * On peut par exemple y mettre l'id du plan sélectionné par l'utisateur.
+       * Elle pourra être retrouvée dans le webhook "checkout.session.completed"
+       * On peut par exemple y mettre l'id du plan sélectionné par l'utilisateur.
        * vous pouvez passez ici toutes les infos qui vous seront utiles au retour du webhook
-       * pour mettre à jour vos données.
+       * pour mettre à jour vos propres données.
        */
 
-      // EXEMPLE:
-      //
-      // metadata: { price: priceId },
+      metadata: { price: priceId },
 
       /*==============================
        * @END_STRIPE_TO_COMPLETE

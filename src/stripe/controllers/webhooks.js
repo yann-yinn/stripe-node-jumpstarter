@@ -49,46 +49,55 @@ module.exports = async (request, response) => {
        *
        * Mettre à jour ici votre utilisateur. Persister:
        *
-       * - le customerId: event.customer. Nécessaire pour ouvrir son portail client.
-       * - (optionnel) l'id du plan choisi: event.metadata.price
+       * - (requis) le customerId: session.customer. Nécessaire pour ouvrir son portail client.
+       * - (optionnel) l'id du plan choisi: session.metadata.price
        * - (optionnel) le status de l'abonnement (ex: "user.subscriptionStatus = ACTIVE")
        *==============================*/
 
-      const user = await db()
+      await db()
         .collection("users")
-        .findOne({ _id: ObjectId(session.client_reference_id) });
-
-      /* EXAMPLE:
-        user.update({
-           id: user.id, 
-           customer: session.customer, // customerId
-           subscription: session.subscription, // subscriptionId
-           price: session.metadata.price, // priceId
-           subscriptionStatus: "ACTIVE", 
-           },
-         })
-         */
+        .updateOne(
+          { _id: ObjectId(session.client_reference_id) },
+          {
+            $set: {
+              stripePriceId: session.metadata.price,
+              stripeCustomerId: session.customer,
+              subscriptionStatus: "ACTIVE",
+            },
+          }
+        );
 
       /*==============================
        * @END_STRIPE_TO_COMPLETE
        *==============================*/
 
       break;
-    /*==============================
-     * @END_STRIPE_TO_COMPLETE
-     *==============================*/
+
     /**
      * Un abonnement a été upgradé ou downgradé
      */
     case "customer.subscription.updated":
+      /*==============================
+       * @STRIPE_TO_COMPLETE
+       *==============================*/
       const subscriptionUpdated = event.data.object;
+      /*==============================
+       * @END_STRIPE_TO_COMPLETE
+       *==============================*/
       break;
+
     /**
      * Un abonnement a été annulé ou est arrivé à sa fin.
      * Mettez à jour ici le status de l'abonnement de votre utilisateur
      */
     case "customer.subscription.deleted":
+      /*==============================
+       * @STRIPE_TO_COMPLETE
+       *==============================*/
       const subscriptionDeleted = event.data.object;
+      /*==============================
+       * @END_STRIPE_TO_COMPLETE
+       *==============================*/
       break;
 
     case "invoice.payment_failed":
@@ -104,9 +113,6 @@ module.exports = async (request, response) => {
       // This approach helps you avoid hitting rate limits.
 
       break;
-    /*==============================
-     * @END_STRIPE_TO_COMPLETE
-     *==============================*/
 
     default:
     // Unhandled event type
