@@ -1,5 +1,7 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
+const oid = require("mongodb").ObjectID;
+const { db } = require("../../utils/db");
 
 /**
  * Créer une nouvelle session Stripe: tout processus de paiement
@@ -19,7 +21,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const session = await stripe.checkout.sessions.create({
+    const config = {
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [
@@ -33,48 +35,50 @@ module.exports = async (req, res) => {
       success_url: config.stripeCheckoutSuccessUrl,
       // en cas d'annulation du paiement, rediriger le visiteur à cette adresse:
       cancel_url: config.stripeCheckoutCancelUrl,
+    };
 
-      /*==============================
-       * @STRIPE_TO_COMPLETE
-       *==============================*/
+    /*==============================
+     * @STRIPE_TO_COMPLETE
+     *==============================*/
 
-      /**
-       * propriété "customer"
-       *
-       * Si on a déjà un customerId stripe pour le user qui passe commande,
-       * on doit le renseigner ici pour que Stripe reconnaisse le client
-       * et ne crée pas un nouveau client à chaque nouvelle commande.
-       */
+    const fullUser = await db
+      .collection(usersTable)
+      .findOne({ _id: oid(req.user.id) });
+    customerId = fullUser.stripeCustomerId;
 
-      // EXEMPLE
-      // customer: req.user.id,
+    /**
+     * propriété "customer"
+     *
+     * Si on a déjà un customerId stripe pour le user qui passe commande,
+     * on doit le renseigner ici pour que Stripe reconnaisse le client
+     * et ne crée pas un nouveau client à chaque nouvelle commande.
+     */
+    customer = customerId ? customerId : null;
 
-      /**
-       * propriété "client_reference_id"
-       *
-       * Passez ici l'id de votre utilisateur.
-       * Ainsi, dans le webhook "checkout.session.completed", vous pourrez
-       * retrouver votre id utilisateur local en inspectant la clef client_reference_id
-       */
+    /**
+     * propriété "client_reference_id"
+     *
+     * Passez ici l'id de votre utilisateur.
+     * Ainsi, dans le webhook "checkout.session.completed", vous pourrez
+     * retrouver votre id utilisateur local en inspectant la clef client_reference_id
+     */
+    config.client_reference_id = req.user.id;
 
-      // EXEMPLE:
-      client_reference_id: req.user.id,
+    /**
+     * propriété "metadata"
+     *
+     * Elle pourra être retrouvée dans le webhook "checkout.session.completed"
+     * On peut par exemple y mettre l'id du plan sélectionné par l'utilisateur.
+     * vous pouvez passez ici toutes les infos qui vous seront utiles au retour du webhook
+     * pour mettre à jour vos propres données.
+     */
+    config.metadata = { price: priceId };
 
-      /**
-       * propriété "metadata"
-       *
-       * Elle pourra être retrouvée dans le webhook "checkout.session.completed"
-       * On peut par exemple y mettre l'id du plan sélectionné par l'utilisateur.
-       * vous pouvez passez ici toutes les infos qui vous seront utiles au retour du webhook
-       * pour mettre à jour vos propres données.
-       */
+    /*==============================
+     * @END_STRIPE_TO_COMPLETE
+     *==============================*/
 
-      metadata: { price: priceId },
-
-      /*==============================
-       * @END_STRIPE_TO_COMPLETE
-       *==============================*/
-    });
+    const session = await stripe.checkout.sessions.create();
     res.send({
       sessionId: session.id,
     });

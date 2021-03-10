@@ -1,6 +1,7 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
 const { db } = require("../../utils/db");
+const oid = require("mongodb").ObjectID;
 
 /**
  * Retourne une URL qui permet aux clients de se rendre sur son espace
@@ -20,7 +21,7 @@ module.exports = async (req, res) => {
 
   const fullUser = await db()
     .collection("users")
-    .findOne({ _id: ObjectId(req.user.id) });
+    .findOne({ _id: oid(req.user.id) });
   customerId = fullUser.stripeCustomerId;
 
   /*==============================

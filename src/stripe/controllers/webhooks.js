@@ -1,6 +1,7 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
 const { db } = require("../../utils/db");
+const oid = require("mongodb").ObjectID;
 
 /**
  * Stripe appelera ce controller lorsqu'un achat est terminé ou lors
@@ -53,18 +54,16 @@ module.exports = async (request, response) => {
        * - (optionnel) le status de l'abonnement (ex: "user.subscriptionStatus = ACTIVE")
        *==============================*/
 
-      await db()
-        .collection("users")
-        .updateOne(
-          { _id: ObjectId(session.client_reference_id) },
-          {
-            $set: {
-              stripePriceId: session.metadata.price,
-              stripeCustomerId: session.customer,
-              subscriptionStatus: "ACTIVE",
-            },
-          }
-        );
+      await db.collection("users").updateOne(
+        { _id: oid(session.client_reference_id) },
+        {
+          $set: {
+            stripePriceId: session.metadata.price,
+            stripeCustomerId: session.customer,
+            subscriptionStatus: "ACTIVE",
+          },
+        }
+      );
 
       /*==============================
        * @END_STRIPE_TO_COMPLETE
