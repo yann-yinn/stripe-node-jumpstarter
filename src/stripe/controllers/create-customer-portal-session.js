@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
    *=============================*/
 
   if (!customerId) {
-    response.status(400).send({
+    res.status(400).send({
       error: {
         message: 'Error: "customerId" is empty.',
       },

@@ -113,7 +113,8 @@ export default {
         password: this.password,
       })
       .then(() => {
-        this.$router.push("/")
+        this.$toasted.show(`Please log in`);
+        this.$router.push("/login")
       })
       .catch((error) => {
           console.log("error", error);

@@ -25,9 +25,6 @@ router.post(
  * !! ATTENTION, request.body ne doit JAMAIS être modifié par un middleware express,
  * sinon la vérification de signature de stripe signature échoue !!
  */
-router.post(
-  "/api/stripe/webhooks",
-  stripeController.webhooks
-);
+router.post("/api/stripe/webhooks", stripeController.webhooks);
 
 module.exports = router;

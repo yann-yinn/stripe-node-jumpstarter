@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const config = {
+    const checkoutConfig = {
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [
@@ -41,8 +41,8 @@ module.exports = async (req, res) => {
      * @STRIPE_TO_COMPLETE
      *==============================*/
 
-    const fullUser = await db
-      .collection(usersTable)
+    const fullUser = await db()
+      .collection("users")
       .findOne({ _id: oid(req.user.id) });
     customerId = fullUser.stripeCustomerId;
 
@@ -78,7 +78,7 @@ module.exports = async (req, res) => {
      * @END_STRIPE_TO_COMPLETE
      *==============================*/
 
-    const session = await stripe.checkout.sessions.create();
+    const session = await stripe.checkout.sessions.create(checkoutConfig);
     res.send({
       sessionId: session.id,
     });

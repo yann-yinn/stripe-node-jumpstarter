@@ -41,7 +41,6 @@
 
 <script>
 import StripePricePlanList from "@/modules/stripe/components/StripePricePlanList";
-import api from "@/utils/api";
 
 export default {
   components: {
