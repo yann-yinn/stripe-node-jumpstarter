@@ -3,16 +3,11 @@
  * Voir documentation dans "controllers/stripe.controller"
  */
 const stripeController = require("../controllers/index");
-const bodyParser = require("body-parser");
 const express = require("express");
 const router = express.Router();
 const userManagement = require("../../utils/userManagement");
 
-router.get(
-  "/api/stripe/plans",
-  userManagement.get().auth.required,
-  stripeController.plans
-);
+router.get("/api/stripe/plans", stripeController.plans);
 
 router.post(
   "/api/stripe/create-checkout-session",
@@ -32,7 +27,6 @@ router.post(
  */
 router.post(
   "/api/stripe/webhooks",
-  bodyParser.raw({ type: "*/*" }),
   stripeController.webhooks
 );
 
