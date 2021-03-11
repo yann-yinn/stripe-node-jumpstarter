@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config src/index.js",
-    "heroku-prebuild": "cd front && npm install && npm install --only=dev && npm run build && cd -",
+    "build": "cd front && npm install && npm install --only=dev && npm run build && cd -",
     "start": "cross-env NODE_ENV=production node src/index.js"
   },
   "author": "",
