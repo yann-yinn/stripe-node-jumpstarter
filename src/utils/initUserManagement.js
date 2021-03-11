@@ -1,7 +1,7 @@
 const userManagement = require("express-user-management");
 
-async function init(app) {
-  await userManagement.init(app, {
+module.exports = (app) =>
+  userManagement.init(app, {
     mongoUrl: process.env.MONGO_URL,
     activationRequired: false,
     usersTable: "users",
@@ -27,12 +27,3 @@ async function init(app) {
       },
     },
   });
-  return userManagement;
-}
-
-module.exports = {
-  init: (app) => init(app),
-  get() {
-    return userManagement;
-  },
-};
