@@ -3,12 +3,15 @@ const { db } = require("../utils/db");
 
 module.exports = {
   /**
+   * étape 1 - on créer la configuration pour le formulaire de checkout.
+   *
    * @param {Object} arguments
    * @param {Object} arguments.req - l'objet http request du controller
    * @param {Object} arguments.checkoutConfig - la configuration pour le checkout de Stripe
    * @param {Object} arguments.priceId - l'id du plan choisi par l'utilisateur
    */
   async onCreateCheckoutSession({ req, checkoutConfig, priceId }) {
+    // on récupère les informations complète de l'utilisateur connecté
     const fullUser = await db()
       .collection("users")
       .findOne({ _id: oid(req.user.id) });
@@ -19,7 +22,7 @@ module.exports = {
      *
      * Si on a déjà un customerId stripe pour le user qui passe commande,
      * on doit le renseigner ici pour que Stripe reconnaisse le client
-     * et ne crée pas un nouveau client à chaque nouvelle commande.
+     * et ne crée pas un nouveau compte client à chaque nouvelle commande.
      */
     if (customerId) {
       checkoutConfig.customer = customerId;
@@ -28,9 +31,10 @@ module.exports = {
     /**
      * propriété "client_reference_id"
      *
-     * Passez ici l'id de votre utilisateur.
+     * Passez ici l'id de votre utilisateur local.
+     *
      * Ainsi, dans le webhook "checkout.session.completed", vous pourrez
-     * retrouver votre id utilisateur local en inspectant la clef client_reference_id
+     * retrouver votre id utilisateur local en inspectant la clef session.client_reference_id
      */
     checkoutConfig.client_reference_id = req.user.id;
 
@@ -38,7 +42,9 @@ module.exports = {
      * propriété "metadata"
      *
      * Elle pourra être retrouvée dans le webhook "checkout.session.completed"
+     *
      * On peut par exemple y mettre l'id du plan sélectionné par l'utilisateur.
+     *
      * vous pouvez passez ici toutes les infos qui vous seront utiles au retour du webhook
      * pour mettre à jour vos propres données.
      */
@@ -46,6 +52,10 @@ module.exports = {
   },
 
   /**
+   * Quand Stripe a terminé une commande avec succès ou tout autre évènement
+   * majeur, ce code sera appelé pour vous permettre de mettre à jour votre
+   * base de données en fonction des infos envoyées par Stripe.
+   *
    * @param {Object} arguments
    * @param {Object} arguments.event - l'evenement Stripe
    */
@@ -75,13 +85,7 @@ module.exports = {
        * Un abonnement a été upgradé ou downgradé
        */
       case "customer.subscription.updated":
-        /*==============================
-         * @STRIPE_TO_COMPLETE
-         *==============================*/
         const subscriptionUpdated = event.data.object;
-        /*==============================
-         * @END_STRIPE_TO_COMPLETE
-         *==============================*/
         break;
 
       /**
@@ -89,13 +93,6 @@ module.exports = {
        * Mettez à jour ici le status de l'abonnement de votre utilisateur
        */
       case "customer.subscription.deleted":
-        /*==============================
-         * @STRIPE_TO_COMPLETE
-         *==============================*/
-        const subscriptionDeleted = event.data.object;
-        /*==============================
-         * @END_STRIPE_TO_COMPLETE
-         *==============================*/
         break;
 
       case "invoice.payment_failed":
@@ -118,6 +115,10 @@ module.exports = {
   },
 
   /**
+   * Pour que votre utilisateur pour accéder au "Customer portal"
+   * (le portail client permettant de gérer abonnement, factures et moyens de paiements),
+   * on doit retrouver l'id client Stripe de votre utilisateur
+   *
    * @param {Object} arguments
    * @param {Object} arguments.req - l'objet http request du controller
    * @param {String} customerId - l'id client Stripe pour générer l'url vers le portail client

@@ -9,18 +9,7 @@ const adapter = require("../adapter");
  * @param {*} res
  */
 module.exports = async (req, res) => {
-  /*==============================
-   * @STRIPE_TO_COMPLETE
-   *
-   * Retrouvez depuis votre base de données le customerId de votre utilisateur,
-   * pour pouvoir générer son lien de session vers son espace de gestion des abonnements!
-   *=============================*/
-
   const customerId = await adapter.onCreateCustomerPortalSession({ req });
-
-  /*==============================
-   * @END_STRIPE_TO_COMPLETE
-   *=============================*/
 
   if (!customerId) {
     res.status(400).send({
