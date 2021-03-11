@@ -1,6 +1,9 @@
 const oid = require("mongodb").ObjectID;
 const { db } = require("../utils/db");
 
+/**
+ * Ces fonctions sont appelées par les controllers du dossier ./controllers
+ */
 module.exports = {
   /**
    * étape 1 - on créer la configuration pour le formulaire de checkout.
@@ -52,8 +55,8 @@ module.exports = {
   },
 
   /**
-   * Quand Stripe a terminé une commande avec succès ou tout autre évènement
-   * majeur, ce code sera appelé pour vous permettre de mettre à jour votre
+   * étape 2 - quand Stripe a terminé une commande avec succès ou tout autre évènement
+   * majeur, ce code sera appelé par Stripe pour vous permettre de mettre à jour votre
    * base de données en fonction des infos envoyées par Stripe.
    *
    * @param {Object} arguments

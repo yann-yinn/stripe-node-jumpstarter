@@ -7,12 +7,6 @@ async function init(app) {
     usersTable: "users",
     jwtSecret: process.env.JWT_SECRET || "secret",
     passwordResetAdress: process.env.BASE_URL + "/passwordReset/",
-    accountActivationAdress: process.env.BASE_URL,
-    additionalTokenKeys: ["stripeCustomerId"],
-    apiKey: {
-      table: "projects",
-      documentKey: "apiKey.apiKey",
-    },
     mails: {
       apiKey: process.env.SENDGRID_API_KEY,
       activation: {
