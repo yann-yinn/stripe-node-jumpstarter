@@ -27,7 +27,9 @@ export default {
         })
         .then((res) => {
           localStorage.setItem("user", JSON.stringify(res.data.user));
-          api.defaults.headers.common["Authorization"] = res.data.user.token;
+          api.defaults.headers.common[
+            "Authorization"
+          ] = `Token ${res.data.user.token}`;
           commit("user", res.data.user);
           return res.data.user;
         });
@@ -48,7 +50,7 @@ export default {
       let user = localStorage.getItem("user");
       if (user) {
         user = JSON.parse(user);
-        api.defaults.headers.common.authorization = `Token ${user.token}`;
+        api.defaults.headers.common["Authorization"] = `Token ${user.token}`;
         commit("user", user);
       }
     },
