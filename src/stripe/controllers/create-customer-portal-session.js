@@ -1,7 +1,6 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
-const { db } = require("../../utils/db");
-const oid = require("mongodb").ObjectID;
+const hooks = require("../hooks");
 
 /**
  * Retourne une URL qui permet aux clients de se rendre sur son espace
@@ -10,8 +9,6 @@ const oid = require("mongodb").ObjectID;
  * @param {*} res
  */
 module.exports = async (req, res) => {
-  let customerId;
-
   /*==============================
    * @STRIPE_TO_COMPLETE
    *
@@ -19,10 +16,7 @@ module.exports = async (req, res) => {
    * pour pouvoir générer son lien de session vers son espace de gestion des abonnements!
    *=============================*/
 
-  const fullUser = await db()
-    .collection("users")
-    .findOne({ _id: oid(req.user.id) });
-  customerId = fullUser.stripeCustomerId;
+  const customerId = hooks.onCreateCustomerPortalSession({ req });
 
   /*==============================
    * @END_STRIPE_TO_COMPLETE
