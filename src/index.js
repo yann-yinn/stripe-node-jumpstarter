@@ -63,7 +63,12 @@ Promise.all([
   // la démo est hébergée chez heroku,
   // on sert directement notre front-end avec express:
   if (process.env.NODE_ENV === "production") {
+    // serve Vue.js build
     app.use(express.static("front/dist"));
+    // redirect 404 to index.html for Vue.js
+    app.get("*", function (req, res) {
+      res.redirect("/");
+    });
   }
 
   app.listen(process.env.PORT, () => {
