@@ -2,6 +2,11 @@
   <div>
     <div class="bg-white shadow p-10">
       <h2 class="font-bold text-gray-800 text-xl pb-4">Your plan</h2>
+      <div class="bg-indigo-100 text-left">
+        <pre>
+          {{ user.subscription }}
+        </pre>
+      </div>
       <h3 class="py-6">We partnered with Stripe for a simplified billing.</h3>
       <button
         @click="onManageBillingClick"
@@ -17,6 +22,7 @@
 import { redirectToCustomerPortal } from "../utils/stripe";
 
 export default {
+  props: ["user"],
   methods: {
     onManageBillingClick() {
       redirectToCustomerPortal();
