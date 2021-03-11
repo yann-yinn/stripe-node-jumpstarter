@@ -1,6 +1,6 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
-const hooks = require("../hooks");
+const adapter = require("../adapter");
 
 /**
  * Retourne une URL qui permet aux clients de se rendre sur son espace
@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
    * pour pouvoir générer son lien de session vers son espace de gestion des abonnements!
    *=============================*/
 
-  const customerId = hooks.onCreateCustomerPortalSession({ req });
+  const customerId = adapter.onCreateCustomerPortalSession({ req });
 
   /*==============================
    * @END_STRIPE_TO_COMPLETE
