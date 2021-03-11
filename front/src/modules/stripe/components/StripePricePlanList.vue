@@ -42,16 +42,15 @@
           v-if="loading === false"
           class="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-2xl lg:mx-auto"
         >
-            <StripePricePlan
-              v-for="plan in plans" 
-              v-show="interval === plan.interval"
-              :plan="plan"
-              :selected="planIsSelected(plan)"
-              :key="plan.id"
-              @subscribe="onSubscribeClick"
-              :subscribing="subscribing"
-            />
-          </div>
+          <StripePricePlan
+            v-for="plan in plans"
+            v-show="interval === plan.interval"
+            :plan="plan"
+            :selected="planIsSelected(plan)"
+            :key="plan.id"
+            @subscribe="onSubscribeClick"
+            :subscribing="subscribing"
+          />
         </div>
       </div>
     </div>
@@ -60,15 +59,11 @@
 
 <script>
 import StripePricePlan from "../components/StripePricePlan";
-import {
-  addStripeScript,
-  createCheckoutSession,
-  getPlans
-} from "../utils/stripe";
+import api from "@/utils/api";
 
 export default {
   components: {
-    StripePricePlan
+    StripePricePlan,
   },
   data() {
     return {
@@ -84,65 +79,71 @@ export default {
       // faut-il montrer seulement les plans annuels ou mensuels ?
       interval: "year",
       error: null,
-      subscribing: false
+      subscribing: false,
     };
   },
   async mounted() {
     this.error = null;
     this.loading = true;
-    addStripeScript();
-    //this.user = await getUser();
-    getPlans()
-      .then(response => {
+
+    // ajout du JS de stripe
+    const src = "https://js.stripe.com/v3/";
+    // On s'assure qu'il n'est pas déjà présent dans notre page, en cas de
+    // hot-reloading ou de démontage / remontage d'un composant Vue
+    if (document.querySelectorAll(`[src="${src}"]`).length === 0) {
+      let stripeScript = document.createElement("script");
+      stripeScript.setAttribute("src", src);
+      document.head.appendChild(stripeScript);
+    }
+
+    api
+      .get(`/api/stripe/plans`)
+      .then((response) => {
         this.plans = response.data.plans;
         this.plansYearly = response.data.plans.filter(
-          p => p.interval === "year"
+          (p) => p.interval === "year"
         );
         this.plansMonthly = response.data.plans.filter(
-          p => p.interval === "month"
+          (p) => p.interval === "month"
         );
         this.loading = false;
       })
-      .catch(e => {
+      .catch((e) => {
         this.error = e;
         throw new Error(e);
       });
   },
   methods: {
     planIsSelected(plan) {
-      /*
-      if (this.user['https://user_metadata'] && this.user['https://user_metadata'].price === plan.id) {
-        return true
-      }
-      */
-      return false
+      return false;
     },
     async onSubscribeClick(plan) {
-      // user is not logged in, 
+      // user is not logged in,
       if (!this.$store.state.auth.user) {
         this.$toasted.show("You must sign or create an account to buy a plan");
         this.$router.push("/login");
         return;
-      } 
+      }
       // if user is logged in, redirect him to stripe checkout
       const priceId = plan.id;
       this.subscribing = true;
       this.error = null;
-      return createCheckoutSession({ priceId })
-        .then(async response => {
-          console.log('Stripe: redirectToCheckout: ' + response.data);
+      api
+        .post("/api/stripe/create-checkout-session", { priceId })
+        .then(async (response) => {
+          console.log("Stripe: redirectToCheckout: " + response.data);
           // appeler une fonction de Stripe.js pour rediriger vers la page de paiement
           const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY);
           await stripe.redirectToCheckout({
-            sessionId: response.data.sessionId
+            sessionId: response.data.sessionId,
           });
           this.subscribing = false;
         })
-        .catch(error => {
+        .catch((error) => {
           this.subscribing = false;
           this.error = error.message;
         });
-    }
-  }
+    },
+  },
 };
 </script>

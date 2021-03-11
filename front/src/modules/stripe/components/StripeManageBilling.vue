@@ -26,13 +26,17 @@
 </template>
 
 <script>
-import { redirectToCustomerPortal } from "../utils/stripe";
+import api from "@/utils/api";
 
 export default {
   props: ["user"],
   methods: {
     onManageBillingClick() {
-      redirectToCustomerPortal();
+      api
+        .post(`/api/stripe/create-customer-portal-session`)
+        .then((response) => {
+          window.location.href = response.data.url;
+        });
     },
   },
 };

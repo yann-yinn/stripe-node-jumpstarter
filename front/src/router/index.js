@@ -31,7 +31,7 @@ const routes = [
     name: "Subscribe",
     component: () =>
       import(
-        /* webpackChunkName: "subscribe" */ "@/modules/stripe/views/StripeSubscribe.vue"
+        /* webpackChunkName: "subscribe" */ "@/modules/stripe/components/StripeSubscribe.vue"
       ),
   },
   {
