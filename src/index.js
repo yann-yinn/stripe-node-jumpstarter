@@ -60,8 +60,9 @@ Promise.all([
     });
   });
 
-  // la démo est hébergée chez heroku, express est utilisé pour servir le front-end
-  if (process.env === "PRODUCTION") {
+  // la démo est hébergée chez heroku,
+  // on sert directement notre front-end avec express:
+  if (process.env.NODE_ENV === "production") {
     app.use(express.static("front/dist"));
   }
 
