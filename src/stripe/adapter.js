@@ -118,9 +118,7 @@ module.exports = {
   },
 
   /**
-   * Pour que votre utilisateur pour accéder au "Customer portal"
-   * (le portail client permettant de gérer abonnement, factures et moyens de paiements),
-   * on doit retrouver l'id client Stripe de votre utilisateur
+   * étape 3 - pour que votre utilisateur puisse accéder au "Customer portal"
    *
    * @param {Object} arguments
    * @param {Object} arguments.req - l'objet http request du controller
