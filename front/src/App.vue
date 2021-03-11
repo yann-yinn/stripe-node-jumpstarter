@@ -9,11 +9,8 @@
       </span>
       <span v-if="user">
         <router-link class="mr-3" to="/account">
-          Account ({{ user.username }})</router-link
-        >
-        <a @click.prevent="$store.dispatch('auth/logout')">
-          Logout
-        </a>
+          Account {{ user.username }} 🔑
+        </router-link>
       </span>
     </div>
     <router-view />
@@ -24,13 +21,18 @@
 import api from "./utils/api";
 
 export default {
+  data() {
+    return {
+      user: null,
+    };
+  },
   created() {
     this.$store.dispatch("auth/rememberMe");
-  },
-  computed: {
-    user: async function() {
-      return await api.get("/api/userinfo");
-    },
+
+    api.get("/api/userinfo").then((r) => {
+      console.log("r", r);
+      this.user = r.data;
+    });
   },
 };
 </script>

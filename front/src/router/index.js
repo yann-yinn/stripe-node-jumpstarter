@@ -14,14 +14,16 @@ const routes = [
     path: "/login",
     name: "Login",
     component: () =>
-      import(/* webpackChunkName: "login" */ "@/modules/auth/views/Login.vue"),
+      import(
+        /* webpackChunkName: "login" */ "@/modules/auth/components/Login.vue"
+      ),
   },
   {
     path: "/register",
     name: "Register",
     component: () =>
       import(
-        /* webpackChunkName: "register" */ "@/modules/auth/views/Register.vue"
+        /* webpackChunkName: "register" */ "@/modules/auth/components/Register.vue"
       ),
   },
   {
@@ -36,13 +38,13 @@ const routes = [
     path: "/account",
     name: "Account",
     component: () =>
-      import(/* webpackChunkName: "subscribe" */ "@/views/Account.vue"),
+      import(/* webpackChunkName: "account" */ "@/views/Account.vue"),
   },
   {
     path: "/protected",
     name: "Protected",
     component: () =>
-      import(/* webpackChunkName: "subscribe" */ "@/views/Protected.vue"),
+      import(/* webpackChunkName: "protected" */ "@/views/Protected.vue"),
   },
 ];
 

@@ -40,22 +40,19 @@ Promise.all([
       .collection("users")
       .findOne({ _id: oid(req.user.id) });
 
-    // get current subscription for this user
-    const subscription = await stripe.plans
-      .retrieve(fullUser.stripePriceId)
-      .then((plan) => {
-        return stripe.products.retrieve(plan.product).then((product) => {
-          plan.product = product;
-          return plan;
-        });
-      });
+    // get current subscription object for this user, from stripe API
+    let subscription = null;
+    if (fullUser.stripeSubscriptionId) {
+      subscription = await stripe.subscriptions.retrieve(
+        fullUser.stripeSubscriptionId
+      );
+    }
 
     res.send({
       id: fullUser._id,
       email: fullUser.email,
       username: fullUser.username,
       subscription,
-      subscriptionStatus: fullUser.subscriptionStatus,
     });
   });
 

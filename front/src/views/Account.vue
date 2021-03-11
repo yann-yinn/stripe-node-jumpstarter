@@ -8,6 +8,8 @@
         <p class="font-bold">{{ user.username }}</p>
         <p>{{ user.email }}</p>
       </div>
+      <a class="cursor-pointer" @click.prevent="$store.dispatch('auth/logout')">
+      </a>
     </div>
     <div class="py-10">
       <StripeManageBilling />

@@ -75,9 +75,9 @@ module.exports = {
             { _id: oid(session.client_reference_id) },
             {
               $set: {
-                stripePriceId: session.metadata.price,
-                stripeCustomerId: session.customer,
-                subscriptionStatus: "ACTIVE",
+                stripePriceId: session.metadata.price, // metadata are set in onCreateCheckoutSession()
+                stripeCustomerId: session.customer, // set by stripe
+                stripeSubscriptionId: session.subscription, // set by Stripe
               },
             }
           );

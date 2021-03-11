@@ -130,7 +130,7 @@ export default {
       this.error = null;
       return createCheckoutSession({ priceId })
         .then(async response => {
-          console.log('STRIPE_redirectToCheckout', response.data);
+          console.log('Stripe: redirectToCheckout: ' + response.data);
           // appeler une fonction de Stripe.js pour rediriger vers la page de paiement
           const stripe = Stripe(process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY);
           await stripe.redirectToCheckout({
