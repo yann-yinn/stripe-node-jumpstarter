@@ -37,7 +37,7 @@ module.exports = async (request, response) => {
     });
   }
 
-  adapter.onWehbooks({ event });
+  await adapter.onWehbooks({ event });
 
   response.sendStatus(200);
 };

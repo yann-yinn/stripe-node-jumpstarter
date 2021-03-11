@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const checkoutConfig = {
+    let checkoutConfig = {
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [
@@ -36,7 +36,11 @@ module.exports = async (req, res) => {
       cancel_url: config.stripeCheckoutCancelUrl,
     };
 
-    adapter.onCreateCheckoutSession({ req, checkoutConfig, priceId });
+    await adapter.onCreateCheckoutSession({
+      req,
+      checkoutConfig,
+      priceId,
+    });
 
     const session = await stripe.checkout.sessions.create(checkoutConfig);
     res.send({

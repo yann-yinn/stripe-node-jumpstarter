@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
    * pour pouvoir générer son lien de session vers son espace de gestion des abonnements!
    *=============================*/
 
-  const customerId = adapter.onCreateCustomerPortalSession({ req });
+  const customerId = await adapter.onCreateCustomerPortalSession({ req });
 
   /*==============================
    * @END_STRIPE_TO_COMPLETE

@@ -43,8 +43,6 @@ module.exports = {
      * pour mettre à jour vos propres données.
      */
     checkoutConfig.metadata = { price: priceId };
-
-    return checkoutConfig;
   },
 
   /**
