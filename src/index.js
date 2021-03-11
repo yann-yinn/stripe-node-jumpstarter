@@ -5,6 +5,8 @@ const userManagement = require("express-user-management");
 const initUserManagement = require("./utils/initUserManagement");
 const { connect, db } = require("./utils/db");
 const oid = require("mongodb").ObjectID;
+const stripeConfig = require("./stripe/config");
+const stripe = require("stripe")(stripeConfig.stripeSecretKey);
 
 // configurer notre serveur HTTP
 const app = express();
@@ -29,12 +31,32 @@ Promise.all([
   // ajouter nos routes stripes
   app.use(require("./stripe/routes"));
 
+  /**
+   * Retourne toutes les infos user non sensibles.
+   */
   app.get("/api/userinfo", userManagement.auth.required, async (req, res) => {
-    res.send("userinfo");
+    // pull full user object from database
     const fullUser = await db()
       .collection("users")
       .findOne({ _id: oid(req.user.id) });
-    console.log("fullUser", fullUser);
+
+    // get current subscription for this user
+    const subscription = await stripe.plans
+      .retrieve(fullUser.stripePriceId)
+      .then((plan) => {
+        return stripe.products.retrieve(plan.product).then((product) => {
+          plan.product = product;
+          return plan;
+        });
+      });
+
+    res.send({
+      id: fullUser._id,
+      email: fullUser.email,
+      username: fullUser.username,
+      subscription,
+      subscriptionStatus: fullUser.subscriptionStatus,
+    });
   });
 
   // la démo est hébergée chez heroku, express est utilisé pour servir le front-end

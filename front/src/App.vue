@@ -22,15 +22,14 @@
 
 <script>
 import api from "./utils/api";
+
 export default {
   created() {
     this.$store.dispatch("auth/rememberMe");
-    // test /api/userinfo endpoint
-    // api.get("http://localhost:6001/api/userinfo");
   },
   computed: {
-    user: function() {
-      return this.$store.state.auth.user;
+    user: async function() {
+      return await api.get("/api/userinfo");
     },
   },
 };
