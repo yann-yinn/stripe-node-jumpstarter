@@ -67,7 +67,7 @@ module.exports = {
       // Le paiement est un succès et l'abonnement a été crée!
       case "checkout.session.completed":
         const session = event.data.object;
-        console.log(JSON.stringify(session, 0, 2));
+        // console.log(JSON.stringify(session, 0, 2));
 
         await db()
           .collection("users")

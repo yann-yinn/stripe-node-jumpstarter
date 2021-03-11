@@ -4,9 +4,8 @@ const adapter = require("../adapter");
 
 /**
  * Retourne une URL qui permet aux clients de se rendre sur son espace
- * de gestion des abonnements : https://stripe.com/docs/billing/subscriptions/customer-portal
- * @param {*} req
- * @param {*} res
+ * de gestion des abonnements
+ * Voir https://stripe.com/docs/billing/subscriptions/customer-portal
  */
 module.exports = async (req, res) => {
   const customerId = await adapter.onCreateCustomerPortalSession({ req });
