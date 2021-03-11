@@ -32,7 +32,7 @@ Promise.all([
   app.use(require("./stripe/routes"));
 
   /**
-   * Retourne toutes les infos user non sensibles.
+   * Retourne toutes les infos user (non sensibles)
    */
   app.get("/api/userinfo", userManagement.auth.required, async (req, res) => {
     // pull full user object from database
@@ -40,11 +40,15 @@ Promise.all([
       .collection("users")
       .findOne({ _id: oid(req.user.id) });
 
-    // get current subscription object for this user, from stripe API
+    // récupérer depuis Stripe les données concernant l'abonnement de cet utilisateur
     let subscription = null;
     if (fullUser.stripeSubscriptionId) {
       subscription = await stripe.subscriptions.retrieve(
         fullUser.stripeSubscriptionId
+      );
+      // on ajoute les infos du produit associé à cet abonnement
+      subscription.product = await stripe.products.retrieve(
+        subscription.plan.product
       );
     }
 
