@@ -17,7 +17,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-user-management": "^1.6.1",
+    "express-user-management": "^1.6.3",
     "mobile-detect": "^1.4.4",
     "nodemon": "^2.0.7",
     "stripe": "^8.137.0"
