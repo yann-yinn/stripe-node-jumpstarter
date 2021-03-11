@@ -34,26 +34,26 @@ module.exports = async (req, res) => {
         message: 'Error: "customerId" is empty.',
       },
     });
-  }
+  } else {
+    try {
+      // l'url vers laquelle sera redirigée le visiteur une fois
+      // qu'il a fini de gérer son abonnement, par exemple son compte.
+      const returnUrl = config.stripeBillingReturnUrl;
 
-  try {
-    // l'url vers laquelle sera redirigée le visiteur une fois
-    // qu'il a fini de gérer son abonnement, par exemple son compte.
-    const returnUrl = config.stripeBillingReturnUrl;
-
-    const portalsession = await stripe.billingPortal.sessions.create({
-      customer: customerId,
-      return_url: returnUrl,
-    });
-    res.send({
-      url: portalsession.url,
-    });
-  } catch (e) {
-    res.status(400);
-    return res.send({
-      error: {
-        message: e.message,
-      },
-    });
+      const portalsession = await stripe.billingPortal.sessions.create({
+        customer: customerId,
+        return_url: returnUrl,
+      });
+      res.send({
+        url: portalsession.url,
+      });
+    } catch (e) {
+      res.status(400);
+      return res.send({
+        error: {
+          message: e.message,
+        },
+      });
+    }
   }
 };

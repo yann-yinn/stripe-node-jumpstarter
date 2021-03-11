@@ -53,7 +53,9 @@ module.exports = async (req, res) => {
      * on doit le renseigner ici pour que Stripe reconnaisse le client
      * et ne crée pas un nouveau client à chaque nouvelle commande.
      */
-    customer = customerId ? customerId : null;
+    if (customerId) {
+      checkoutConfig.customer = customerId;
+    }
 
     /**
      * propriété "client_reference_id"
@@ -62,7 +64,7 @@ module.exports = async (req, res) => {
      * Ainsi, dans le webhook "checkout.session.completed", vous pourrez
      * retrouver votre id utilisateur local en inspectant la clef client_reference_id
      */
-    config.client_reference_id = req.user.id;
+    checkoutConfig.client_reference_id = req.user.id;
 
     /**
      * propriété "metadata"
@@ -72,7 +74,7 @@ module.exports = async (req, res) => {
      * vous pouvez passez ici toutes les infos qui vous seront utiles au retour du webhook
      * pour mettre à jour vos propres données.
      */
-    config.metadata = { price: priceId };
+    checkoutConfig.metadata = { price: priceId };
 
     /*==============================
      * @END_STRIPE_TO_COMPLETE
