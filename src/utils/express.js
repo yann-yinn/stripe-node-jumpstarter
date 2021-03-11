@@ -6,6 +6,10 @@ const bodyParser = require("body-parser");
 const app = express();
 app.use(cors());
 
+/**
+ * Toujours parser nos corps de requêtes en JSON
+ * SAUF pour la route qui réceptionne les webhooks de Stripe
+ */
 app.use((req, res, next) => {
   if (req.originalUrl === "/api/stripe/webhooks") {
     bodyParser.raw({ type: "*/*" })(req, res, next);
