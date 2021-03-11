@@ -1,4 +1,4 @@
-# Stripe Node Boilerplate
+# Stripe Node Starter
 
 ## installation locale de la démo
 

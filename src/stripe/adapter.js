@@ -11,7 +11,7 @@ module.exports = {
    * @param {Object} arguments
    * @param {Object} arguments.req - l'objet http request du controller
    * @param {Object} arguments.checkoutConfig - la configuration pour le checkout de Stripe
-   * @param {Object} arguments.priceId - l'id du plan choisi par l'utilisateur
+   * @param {String} arguments.priceId - l'id du plan choisi par l'utilisateur
    */
   async onCreateCheckoutSession({ req, checkoutConfig, priceId }) {
     // on récupère les informations complète de l'utilisateur connecté
@@ -124,7 +124,7 @@ module.exports = {
    *
    * @param {Object} arguments
    * @param {Object} arguments.req - l'objet http request du controller
-   * @param {String} customerId - l'id client Stripe pour générer l'url vers le portail client
+   * @return {String} customerId - l'id client Stripe pour générer l'url vers le portail client
    */
   async onCreateCustomerPortalSession({ req }) {
     const fullUser = await db()
