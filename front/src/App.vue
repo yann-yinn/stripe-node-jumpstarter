@@ -21,9 +21,12 @@
 </template>
 
 <script>
+import api from "./utils/api";
 export default {
   created() {
     this.$store.dispatch("auth/rememberMe");
+    // test /api/userinfo endpoint
+    // api.get("http://localhost:6001/api/userinfo");
   },
   computed: {
     user: function() {

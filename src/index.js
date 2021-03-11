@@ -1,8 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const userManagement = require("express-user-management");
 const initUserManagement = require("./utils/initUserManagement");
-const { connect } = require("./utils/db");
+const { connect, db } = require("./utils/db");
+const oid = require("mongodb").ObjectID;
 
 // configurer notre serveur HTTP
 const app = express();
@@ -26,6 +28,14 @@ Promise.all([
 ]).then(() => {
   // ajouter nos routes stripes
   app.use(require("./stripe/routes"));
+
+  app.get("/api/userinfo", userManagement.auth.required, async (req, res) => {
+    res.send("userinfo");
+    const fullUser = await db()
+      .collection("users")
+      .findOne({ _id: oid(req.user.id) });
+    console.log("fullUser", fullUser);
+  });
 
   // la démo est hébergée chez heroku, express est utilisé pour servir le front-end
   if (process.env === "PRODUCTION") {

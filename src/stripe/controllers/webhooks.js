@@ -20,6 +20,7 @@ module.exports = async (request, response) => {
         message: "config.stripeWebhookSecret is not defined",
       },
     });
+    return;
   }
 
   try {
@@ -35,6 +36,7 @@ module.exports = async (request, response) => {
         message: e.message,
       },
     });
+    return;
   }
 
   await adapter.onWehbooks({ event });
