@@ -1,3 +1,5 @@
+const express = require("express");
+
 /**
  * @param {Object} app - express app
  * @param {String} path - path to directory: example: "front/dist"
