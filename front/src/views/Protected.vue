@@ -46,11 +46,7 @@ export default {
         this.loading = false;
       })
       .catch((error) => {
-        if (error.response.status == "401") {
-          this.error = "Non autorisé";
-        } else {
-          this.error = error;
-        }
+        this.error = error.response.status == "401" ? "Non autorisé" : error;
         this.loading = false;
       });
   },
