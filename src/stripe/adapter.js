@@ -1,9 +1,6 @@
 const oid = require("mongodb").ObjectID;
 const { db } = require("../utils/db");
 
-/**
- * Ces fonctions sont appelées par les controllers du dossier ./controllers
- */
 module.exports = {
   /**
    * étape 1 - on créer la configuration pour le formulaire de checkout.

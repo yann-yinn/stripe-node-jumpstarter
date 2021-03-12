@@ -6,7 +6,7 @@ const { connect } = require("./db");
 module.exports = async () => {
   await Promise.all([
     // connection à notre base de données
-    connect(process.env.MONGO_URL),
+    connect(),
     // démarrer l'API de gestion des utilisateurs
     userManagement.init(expressApp, userManagementConfig),
   ]);
