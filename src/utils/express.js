@@ -18,11 +18,4 @@ app.use((req, res, next) => {
   }
 });
 
-// la démo est hébergée chez heroku,
-// on sert directement notre front-end avec express:
-if (process.env.NODE_ENV === "production") {
-  // serve Vue.js build
-  app.use(express.static("front/dist"));
-}
-
 module.exports = app;
