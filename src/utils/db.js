@@ -11,7 +11,7 @@ module.exports = {
   async connect() {
     await client.connect();
     db = client.db();
-    console.log("📡 Connected successfully to database " + db.databaseName);
+    console.log("🔌 Connected successfully to database " + db.databaseName);
   },
 
   db: () => db,

@@ -22,5 +22,9 @@
     "mongodb": "^3.6.4",
     "nodemon": "^2.0.7",
     "stripe": "^8.137.0"
+  },
+  "devDependencies": {
+    "localtunnel": "^2.0.1",
+    "macaddress": "^0.5.1"
   }
 }
