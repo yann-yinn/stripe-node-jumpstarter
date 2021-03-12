@@ -1,3 +1,7 @@
+/**
+ * @param {Object} app - express app
+ * @param {String} path - path to directory: example: "front/dist"
+ */
 module.exports = (app, path) => {
   app.use(express.static(path));
 
