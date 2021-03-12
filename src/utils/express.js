@@ -23,10 +23,6 @@ app.use((req, res, next) => {
 if (process.env.NODE_ENV === "production") {
   // serve Vue.js build
   app.use(express.static("front/dist"));
-  // redirect 404 to index.html for Vue.js
-  app.get("*", function (req, res) {
-    res.redirect("/");
-  });
 }
 
 module.exports = app;
