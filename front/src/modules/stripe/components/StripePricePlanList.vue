@@ -68,7 +68,7 @@ export default {
   },
   data() {
     return {
-      user: null,
+      user: {},
       // tous les plans
       plans: [],
       loading: false,
@@ -119,7 +119,11 @@ export default {
       });
     },
     planIsSelected(plan) {
-      return this.user.subscription.plan.id === plan.id;
+      let result = false;
+      if (this.user.subscription) {
+        result = this.user.subscription.plan.id === plan.id;
+      }
+      return result;
     },
     async onSubscribeClick(plan) {
       // user is not logged in,
