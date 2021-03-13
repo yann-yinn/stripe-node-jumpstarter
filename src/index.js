@@ -17,7 +17,8 @@ Promise.all([connect(), userManagement.init(app, userManagementConfig)]).then(
     if (process.env.NODE_ENV === "development") {
       require("./utils/localtunnel")();
     }
-    // servir le dossier front/disct
+
+    // servir le build du front-end en production, pour la démo hébergée sur Heroku
     if (process.env.NODE_ENV === "production") {
       serveStaticApp(app, "front/dist");
     }

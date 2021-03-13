@@ -1,6 +1,6 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
-const adapter = require("../adapter");
+const hooks = require("../hooks");
 
 /**
  * Stripe appelera ce controller lorsqu'un achat est terminé ou lors
@@ -39,7 +39,7 @@ module.exports = async (request, response) => {
     return;
   }
 
-  await adapter.onWehbooks({ event });
+  await hooks.onWehbooks({ event });
 
   response.sendStatus(200);
 };

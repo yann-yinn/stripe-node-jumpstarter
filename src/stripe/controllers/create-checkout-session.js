@@ -1,6 +1,6 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
-const adapter = require("../adapter");
+const hooks = require("../hooks");
 
 /**
  * Créer une nouvelle session Stripe: tout processus de paiement
@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
       cancel_url: config.stripeCheckoutCancelUrl,
     };
 
-    await adapter.onCreateCheckoutSession({
+    await hooks.onCreateCheckoutSession({
       req,
       checkoutConfig,
       priceId,

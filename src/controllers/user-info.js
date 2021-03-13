@@ -4,7 +4,7 @@ const config = require("../stripe/config");
 const stripe = require("stripe")(config.stripeSecretKey);
 
 module.exports = async (req, res) => {
-  // pull full user object from database
+  // récupérer le user complet depuis la base de données
   const fullUser = await db()
     .collection("users")
     .findOne({ _id: oid(req.user.id) });

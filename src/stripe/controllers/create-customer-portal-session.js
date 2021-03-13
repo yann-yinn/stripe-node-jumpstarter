@@ -1,6 +1,6 @@
 const config = require("../config");
 const stripe = require("stripe")(config.stripeSecretKey);
-const adapter = require("../adapter");
+const hooks = require("../hooks");
 
 /**
  * Retourne une URL qui permet aux clients de se rendre sur son espace
@@ -8,7 +8,7 @@ const adapter = require("../adapter");
  * Voir https://stripe.com/docs/billing/subscriptions/customer-portal
  */
 module.exports = async (req, res) => {
-  const customerId = await adapter.onCreateCustomerPortalSession({ req });
+  const customerId = await hooks.onCreateCustomerPortalSession({ req });
 
   if (!customerId) {
     res.status(400).send({

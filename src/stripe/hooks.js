@@ -3,8 +3,6 @@ const { db } = require("../utils/db");
 
 module.exports = {
   /**
-   * étape 1 - on créer la configuration pour le formulaire de checkout.
-   *
    * @param {Object} arguments
    * @param {Object} arguments.req - l'objet http request du controller
    * @param {Object} arguments.checkoutConfig - la configuration pour le checkout de Stripe
@@ -52,9 +50,8 @@ module.exports = {
   },
 
   /**
-   * étape 2 - quand Stripe a terminé une commande avec succès ou tout autre évènement
-   * majeur, ce code sera appelé par Stripe pour vous permettre de mettre à jour votre
-   * base de données en fonction des infos envoyées par Stripe.
+   * Quand Stripe a terminé une commande avec succès ou tout autre évènement
+   * majeur, ce code sera appelé.
    *
    * @param {Object} arguments
    * @param {Object} arguments.event - l'evenement Stripe
