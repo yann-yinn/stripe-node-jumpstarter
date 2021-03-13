@@ -126,13 +126,31 @@ export default {
       return result;
     },
     async onSubscribeClick(plan) {
-      // user is not logged in,
+      // L'utilisateur n'est pas connecté, on ne l'autorise pas à acheter.
       if (!this.$store.state.auth.user) {
-        this.$toasted.show("You must sign or create an account to buy a plan");
+        this.$toasted.show(
+          "You must sign in or create an account to buy a plan"
+        );
         this.$router.push("/login");
         return;
       }
-      // if user is logged in, redirect him to stripe checkout
+
+      // L'utilisateur a déjà un abonnement: on le redirige
+      // vers la gestion des ses abonnements sur son profil
+      if (
+        this.user &&
+        this.user.subscription &&
+        this.user.subscription.status === "active"
+      ) {
+        this.$toasted.show(
+          "You already have a plan. Manage it from your account."
+        );
+        this.$router.push("/account");
+        return;
+      }
+
+      // L'utilisateur est connecté et n'a pas d'abonnement, on le redirige
+      // vers le formulaire de paiement
       const priceId = plan.id;
       this.subscribing = true;
       this.error = null;
