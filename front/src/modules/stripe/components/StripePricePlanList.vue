@@ -7,6 +7,7 @@
           <h1 class="text-5xl font-extrabold text-gray-900 sm:text-center">
             Pricing Plans
           </h1>
+
           <p class="mt-5 text-xl text-gray-500 sm:text-center">
             Account plans unlock additional features.
           </p>
@@ -70,13 +71,8 @@ export default {
       user: null,
       // tous les plans
       plans: [],
-      // seulement les plans avec paiement mensuel
-      plansMonthly: [],
-      // seulement les plans avec paiement annuel.
-      plansYearly: [],
-      // plans en cours de chargement depuis l'API node
       loading: false,
-      // faut-il montrer seulement les plans annuels ou mensuels ?
+      // "month" ou "year": faut-il montrer seulement les plans annuels ou mensuels ?
       interval: "year",
       error: null,
       subscribing: false,
@@ -95,27 +91,35 @@ export default {
       stripeScript.setAttribute("src", src);
       document.head.appendChild(stripeScript);
     }
-
-    api
-      .get(`/api/stripe/plans`)
-      .then((response) => {
-        this.plans = response.data.plans;
-        this.plansYearly = response.data.plans.filter(
-          (p) => p.interval === "year"
-        );
-        this.plansMonthly = response.data.plans.filter(
-          (p) => p.interval === "month"
-        );
-        this.loading = false;
-      })
-      .catch((e) => {
-        this.error = e;
-        throw new Error(e);
-      });
+    this.initData();
   },
   methods: {
+    initData() {
+      this.loading = true;
+      return Promise.all([this.getPlans(), this.getUserInfo()])
+        .then(() => {
+          this.loading = false;
+        })
+        .catch((e) => {
+          this.loading = false;
+          this.error = e;
+          throw new Error(e);
+        });
+    },
+    getPlans() {
+      return api.get(`/api/stripe/plans`).then((response) => {
+        this.plans = response.data.plans;
+        return response.data.plans;
+      });
+    },
+    getUserInfo() {
+      return api.get(`/api/userinfo`).then((response) => {
+        this.user = response.data;
+        return response.data;
+      });
+    },
     planIsSelected(plan) {
-      return false;
+      return this.user.subscription.plan.id === plan.id;
     },
     async onSubscribeClick(plan) {
       // user is not logged in,
