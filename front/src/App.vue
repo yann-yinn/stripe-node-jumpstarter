@@ -3,15 +3,18 @@
     <div class="bg-white text-center py-3">
       <router-link class="mr-3" to="/">Home</router-link>
       <router-link class="mr-3" to="/subscribe">Pricing</router-link>
-      <span v-if="!user">
+      <span v-if="!$store.state.auth.user">
         <router-link class="mr-3" to="/login">Login</router-link>
         <router-link class="mr-3" to="/register">Register</router-link>
       </span>
-      <span v-if="user">
+      <span v-if="$store.state.auth.user">
         <router-link class="mr-3" to="/account">
-          Account ({{ user.username }}) 🔑
+          Account ({{ $store.state.auth.user.username }}) 🔑
         </router-link>
-        <a @click.prevent="$store.dispatch('auth/logout')">
+        <a
+          class="cursor-pointer"
+          @click.prevent="$store.dispatch('auth/logout')"
+        >
           Logout
         </a>
       </span>
@@ -24,11 +27,6 @@
 export default {
   created() {
     this.$store.dispatch("auth/rememberMe");
-  },
-  computed: {
-    user: function() {
-      return this.$store.state.auth.user;
-    },
   },
 };
 </script>

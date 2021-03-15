@@ -3,7 +3,7 @@
     <h1 class="text-5xl font-extrabold text-gray-900 sm:text-center">
       Account
     </h1>
-    <div v-if="loading">Loading...</div>
+    <div v-if="loading" class="my-10">Loading...</div>
     <div v-if="loading === false">
       <div>
         <div v-if="user" class="text-gray-900 pt-4">
