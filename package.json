@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest ./src/tests",
     "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config src/index.js",
     "build": "cd front && npm install && npm install --only=dev && npm run build && cd -",
     "start": "cross-env NODE_ENV=production node src/index.js"
@@ -24,6 +24,7 @@
     "stripe": "^8.137.0"
   },
   "devDependencies": {
+    "jest": "^26.6.3",
     "localtunnel": "^2.0.1",
     "macaddress": "^0.5.1"
   }
