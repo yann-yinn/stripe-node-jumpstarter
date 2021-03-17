@@ -33,10 +33,12 @@ npm run dev
 
 2 - Se rendre sur [https://dashboard.stripe.com/test/products](https://dashboard.stripe.com/test/products) pour ajouter des abonnements et leur tarifs sur l'environnement de test. Exemple:
 
-- Plan basic mensuel à 9€/mois
-- Plan basic annuel à 90€/an
-- Plan premium mensuel à 19€/mois
-- Plan premium annuel à €190/an
+- Un produit "Basic" avec:
+  - un plan tarifaire mensuel à 9€/mois
+  - un plan tarifaire annuel à 90€/an
+- Un produit premium avec:
+  - un plan mensuel à 19€/mois
+  - un plan annuel à €190/an
 
 3 - Récupérer vos [clefs d'API](https://dashboard.stripe.com/test/apikeys)
 
@@ -92,8 +94,14 @@ app.use((req, res, next) => {
 
 -[ ] J'ai bien installé le code (npm install)
 
--[ ] J'ai bien renseignée TOUTES les variables d'environnement correctement côté serveur ET côté front-end
+-[ ] J'ai bien renseignée _TOUTES_ les variables d'environnement correctement côté serveur ET côté front-end
 
--[ ] J'ai bien configuré Stripe comme il faut: produits, webhooks, customer portal...
+-[ ] Stripe: J'ai bien ajouté les produits et leurs plans tarifaires
 
--[ ] J'ai bien ouvert un tunnel en local vers /api/stripe/webhooks
+-[ ] Stripe: J'ai correctement configurer mon webhook
+
+-[ ] J'ai bien configuré le customer Portal: https://dashboard.stripe.com/test/settings/billing/portal
+
+-[ ] J'ai bien ouvert un tunnel en local vers https://{mon-api.com}/api/stripe/webhooks
+
+-[ ] J'ai adapté le code sur fichier `./src/stripe/adapter.js` selon mes besoins
