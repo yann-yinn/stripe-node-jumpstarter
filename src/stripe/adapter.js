@@ -6,9 +6,8 @@ module.exports = {
    * @param {Object} arguments
    * @param {Object} arguments.req - l'objet http request du controller
    * @param {Object} arguments.checkoutConfig - la configuration pour le checkout de Stripe
-   * @param {String} arguments.priceId - l'id du plan choisi par l'utilisateur
    */
-  async onCreateCheckoutSession({ req, checkoutConfig, priceId }) {
+  async onCreateCheckoutSession({ req, checkoutConfig }) {
     // on récupère les informations complète de l'utilisateur connecté
     const fullUser = await db()
       .collection("users")
@@ -41,12 +40,10 @@ module.exports = {
      *
      * Elle pourra être retrouvée dans le webhook "checkout.session.completed"
      *
-     * On peut par exemple y mettre l'id du plan sélectionné par l'utilisateur.
-     *
      * vous pouvez passez ici toutes les infos qui vous seront utiles au retour du webhook
      * pour mettre à jour vos propres données.
      */
-    checkoutConfig.metadata = { price: priceId };
+    checkoutConfig.metadata = {};
   },
 
   /**
@@ -69,7 +66,6 @@ module.exports = {
             { _id: oid(session.client_reference_id) },
             {
               $set: {
-                stripePriceId: session.metadata.price, // metadata are set in onCreateCheckoutSession()
                 stripeCustomerId: session.customer, // set by stripe
                 stripeSubscriptionId: session.subscription, // set by Stripe
               },
@@ -87,7 +83,6 @@ module.exports = {
 
       /**
        * Un abonnement a été annulé ou est arrivé à sa fin.
-       * Mettez à jour ici le status de l'abonnement de votre utilisateur
        */
       case "customer.subscription.deleted":
         break;
