@@ -9,6 +9,9 @@
     "build": "cd front && npm install && npm install --only=dev && npm run build && cd -",
     "start": "cross-env NODE_ENV=production node src/index.js"
   },
+  "jest": {
+    "setupFiles": ["dotenv/config"]
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {

@@ -3,6 +3,7 @@ macaddress = require("macaddress");
 
 module.exports = async () => {
   const macadress = await macaddress.one();
+  // create a uniq subdomain for this specific machine.
   const subdomain = "node-stripe-starter-" + macadress.replace(/:/g, "");
   const tunnel = await localtunnel({ port: process.env.PORT, subdomain });
 
