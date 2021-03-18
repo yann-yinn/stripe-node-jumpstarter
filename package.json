@@ -9,11 +9,6 @@
     "build": "cd front && npm install && npm install --only=dev && npm run build && cd -",
     "start": "cross-env NODE_ENV=production node src/index.js"
   },
-  "jest": {
-    "setupFiles": [
-      "dotenv/config"
-    ]
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -22,8 +17,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "express-user-management": "^1.6.3",
-    "mobile-detect": "^1.4.4",
+    "express-user-management": "^1.6.4",
     "mongodb": "^3.6.4",
     "nodemon": "^2.0.7",
     "stripe": "^8.137.0"
