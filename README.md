@@ -2,17 +2,17 @@
 
 Démarrez rapidement un SaaS avec Node.js et Stripe.
 
-Vous pouvez:
+Vous pouvez soit:
 
-- soit partir de ce projet tel qu'il est pour créer votre propre projet, il fonctionne directement tel quel avec son propre système d'utilisateur et une base MongoDB.
+- Partir de ce projet pour vous en servir de base pour créer votre propre SaaS. Il fonctionnel tel quel, avec une gestion des utilisateurs embarqués.
 
-- soit récupérer et adapter la partie stripe pour l'adapter à votre propre base de données et gestion des utilisateurs.
+- Récupérer et adapter la partie stripe pour ajouter les abonnements à un projet existant.
 
 ## getting started
 
 Pour que la démo fonctionne, vous devez avoir préalablement:
 
-- crée un compte Stripe et l'avoir configuré entièrement (voir section "Configurer Stripe en détails")
+- Crée un compte Stripe et l'avoir configuré entièrement (voir section "Configurer Stripe en détails")
 
 - Avoir créer une base de données mongodb. Vous pouvez par exemple créer une base de donnée en ligne sur [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 
@@ -191,7 +191,7 @@ app.use((req, res, next) => {
 });
 ```
 
-### Mon endpoint "/api/stripe/webhooks" ne semble pas appelée par Stripe
+### Mon endpoint "/api/stripe/webhooks" ne semble pas appelé par Stripe
 
 1. Vérifier que votre webhook est bien appelé: se rendre sur https://dashboard.stripe.com/test/webhooks et vérifier que l'url renseignée renvoie bien vers une url valide de votre application.
 
@@ -201,15 +201,17 @@ app.use((req, res, next) => {
 
 -[ ] J'ai bien installé le code (npm install)
 
+-[ ] J'ai bien renseignée _TOUTES_ les variables d'environnement correctement côté serveur ET côté front-end
+
+-[ ] J'ai bien démarré avec `npm run dev` le server ET le front-end
+
 -[ ] Stripe: J'ai bien ajouté les produits et leurs plans tarifaires
 
--[ ] Stripe: J'ai correctement configurer mon webhook
+-[ ] Stripe: J'ai bien correctement configuré mon webhook (envoi des évènements, récupéreration de la clef secrète, configuration de l'url de réception)
 
--[ ] J'ai bien configuré le customer Portal: https://dashboard.stripe.com/test/settings/billing/portal
+-[ ] J'ai bien ouvert un tunnel en local vers https://localhost/api/stripe/webhooks
 
--[ ] J'ai bien ouvert un tunnel en local vers https://{mon-api.com}/api/stripe/webhooks
-
--[ ] J'ai bien renseignée _TOUTES_ les variables d'environnement correctement côté serveur ET côté front-end
+-[ ] J'ai bien configuré mon customer Portal: https://dashboard.stripe.com/test/settings/billing/portal
 
 -[ ] J'ai adapté le code sur fichier `./src/stripe/adapter.js` selon mes besoins
 
