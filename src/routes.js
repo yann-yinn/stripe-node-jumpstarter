@@ -1,6 +1,3 @@
-/**
- * @file routes pour l'API de gestion des abonnements avec stripe
- */
 const appControllers = require("./controllers/index");
 const express = require("express");
 const router = express.Router();
