@@ -61,8 +61,8 @@ Si vous avez votre propre base de données et votre propre système de gestion d
 - Installer stripe `npm install stripe`
 - Ajouter les variables d'environnement du fichier `.env.example` dont le nom commence par `STRIPE_`
 - Modifier la config du fichier `src/stripe/config.js` à votre guise.
-- Récupérer ou recréez les routes présentes du fichier `src/stripe/routes.js`
-- Modifier le fichier `src/stripe/adapter.js` pour mettre à jour votre base de données locales avec du code personnalisé aux bons endroits.
+- branchez les routes du fichier à votre application: `src/stripe/routes.js`
+- Modifier le fichier `src/stripe/adapter.js` pour personnaliser votre code métier.
 
 #### Le fichier `./src/stripe/adapter.js`\*\*
 
@@ -70,33 +70,33 @@ Il contient des fonctions qui sont appelés automatiquement par les controllers:
 
 1. **`onCreateCheckoutSession()`** (appelé par `src/stripe/controllers/create-checkout-session`):
 
-Un nouvel achat Stripe commence: vous devez passer à Stripe deux variables au moins:
+Méthode appelée quand un nouvel achat Stripe commence: vous devez passer à Stripe deux variables au moins:
 
 ```js
 // l'id de l'utilisateur qui est en train de s'abonner
-checkoutConfig.client_reference_id = currentUser().id;
+checkoutConfig.client_reference_id = currentUser.id;
 ```
 
 ```js
-// L'id client de votre utilisateur chez Stripe,
-// si et UNIQUEMENT SI votre utilisateur a déjà fait un achat précédemment
-if (currentUser().customerId) {
-  checkoutConfig.customer = customerId;
+// L'id client Stripe de votre utilisateur,
+// (existera UNIQUEMENT SI votre utilisateur a déjà fait un achat précédemment)
+if (currentUser.customerId) {
+  checkoutConfig.customer = currentUser.customerId;
 }
 ```
 
 2. **`onWehbooks()`** (appelé par `src/stripe/controllers/webhooks`):
 
-Appelé lors des évènements Stripe (quand vous aurez configuré un webhook sur votre Stripe), tel qu'un abonnement acheté avec succès.
+Méthode Appelée lors des évènements clefs de Stripe.
 
-On va surtout être intéressé par l'évènement `checkout.session.completed` qui est appelé quand le processus d'abonnement se termine avec succès.
+On va prioritairement traiter l'évènement `checkout.session.completed` qui est appelé quand le processus d'abonnement se termine avec succès.
 
 `event.data.object` contiendra la clef `client_reference_id` qui est l'id de votre utilisateur local que vous avez envoyé précédemment.
 
-Cela va permettre de mettre à jour votre base de données, il faudra persister a minima deux données:
+C'est le bon endroit persister dans votre base de données des informations renvoyées par Stripe. Au minimum:
 
-- **l'id client** (customer) de l'utilisateur chez Stripe (indispensable pour accéder plus tard à son Portail Client)
-- l'id de l'abonnement (subscription) auquel il vient souscrire (indispensable pour pouvoir retrouver les données de son abonnement, tel que le status, le prix, la durée etc)
+- **l'id client** (customer) de l'utilisateur chez Stripe (qui sera indispensable pour accéder créer plus tard l'url d'accès à son Portail Client)
+- l'id de l'abonnement (subscription) auquel il vient souscrire (qui sera indispensable pour pouvoir retrouver les données de son abonnement, tel que le status, le prix, la durée etc)
 
 Vous pouvez persister d'autres données selon vos besoins.
 
