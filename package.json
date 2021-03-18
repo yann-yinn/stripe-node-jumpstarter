@@ -10,7 +10,9 @@
     "start": "cross-env NODE_ENV=production node src/index.js"
   },
   "jest": {
-    "setupFiles": ["dotenv/config"]
+    "setupFiles": [
+      "dotenv/config"
+    ]
   },
   "author": "",
   "license": "ISC",
@@ -28,7 +30,6 @@
   },
   "devDependencies": {
     "jest": "^26.6.3",
-    "localtunnel": "^2.0.1",
-    "macaddress": "^0.5.1"
+    "localtunnel": "^2.0.1"
   }
 }
