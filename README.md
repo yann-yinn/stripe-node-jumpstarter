@@ -199,21 +199,21 @@ app.use((req, res, next) => {
 
 ## Checklist globale
 
--[ ] J'ai bien installé le code (npm install)
+✔️ J'ai bien installé le code (npm install)
 
--[ ] J'ai bien renseignée _TOUTES_ les variables d'environnement correctement côté serveur ET côté front-end
+✔️ J'ai bien renseignée _TOUTES_ les variables d'environnement correctement côté serveur ET côté front-end
 
--[ ] J'ai bien démarré avec `npm run dev` le server ET le front-end
+✔️ J'ai bien démarré avec `npm run dev` le server ET le front-end
 
--[ ] Stripe: J'ai bien ajouté les produits et leurs plans tarifaires
+✔️ Stripe: J'ai bien ajouté les produits et leurs plans tarifaires
 
--[ ] Stripe: J'ai bien correctement configuré mon webhook (envoi des évènements, récupéreration de la clef secrète, configuration de l'url de réception)
+✔️ Stripe: J'ai bien correctement configuré mon webhook (envoi des évènements, récupéreration de la clef secrète, configuration de l'url de réception)
 
--[ ] J'ai bien ouvert un tunnel en local vers https://localhost/api/stripe/webhooks
+✔️ J'ai bien ouvert un tunnel en local vers https://localhost/api/stripe/webhooks
 
--[ ] J'ai bien configuré mon customer Portal: https://dashboard.stripe.com/test/settings/billing/portal
+✔️ J'ai bien configuré mon customer Portal: https://dashboard.stripe.com/test/settings/billing/portal
 
--[ ] J'ai adapté le code sur fichier `./src/stripe/adapter.js` selon mes besoins
+✔️ J'ai adapté le code sur fichier `./src/stripe/adapter.js` selon mes besoins
 
 ## Support
 
