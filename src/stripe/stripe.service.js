@@ -103,10 +103,24 @@ async function getSubcriptionInfos(subscriptionId) {
   return subscription;
 }
 
+/**
+ *
+ * @param {string} signature - webhook signature, récupérée depuis request.headers["stripe-signature"];
+ */
+async function handleWebhooks({ signature }) {
+  const event = apiStripe().webhooks.constructEvent(
+    request.body,
+    signature,
+    config.stripeWebhookSecret
+  );
+  await adapter.onWehbooks({ event });
+}
+
 module.exports = {
   stripeApi,
   getPlans,
   getSubcriptionInfos,
   createCheckoutSession,
   createCustomerPortalSession,
+  handleWebhooks,
 };

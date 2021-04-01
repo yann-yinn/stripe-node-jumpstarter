@@ -12,10 +12,11 @@ module.exports = {
    * @param {Object} options.checkoutConfig - la configuration pour le checkout de Stripe
    */
   async onCreateCheckoutSession({ user, checkoutConfig }) {
+    console.log("user", user);
     // on récupère les informations complète de l'utilisateur connecté
     const fullUser = await db()
       .collection("users")
-      .findOne({ _id: oid(user._id) });
+      .findOne({ _id: oid(user.id) });
     const customerId = fullUser.stripeCustomerId;
 
     /**
@@ -37,7 +38,7 @@ module.exports = {
      * Ainsi, dans le webhook "checkout.session.completed", vous pourrez
      * retrouver votre id utilisateur local en inspectant la clef session.client_reference_id
      */
-    checkoutConfig.client_reference_id = user._id;
+    checkoutConfig.client_reference_id = user.id;
 
     /**
      * propriété "metadata"
