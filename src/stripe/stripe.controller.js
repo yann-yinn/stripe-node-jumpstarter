@@ -50,9 +50,15 @@ async function createCustomerPortalSession(req, res) {
  * avec les infos de son abonnement (status de l'abonnement, id client Stripe)
  */
 async function webhooks(request, response) {
-  await stripeService.handleWebhooks({
-    signature: request.headers["stripe-signature"],
-  });
+  const signature = request.headers["stripe-signature"];
+  const event = stripeService
+    .getStripe()
+    .webhooks.constructEvent(
+      request.body,
+      signature,
+      config.stripeWebhookSecret
+    );
+  await adapter.onWehbooks({ event });
   response.sendStatus(200);
 }
 

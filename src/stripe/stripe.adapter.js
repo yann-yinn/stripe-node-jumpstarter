@@ -12,7 +12,6 @@ module.exports = {
    * @param {Object} options.checkoutConfig - la configuration pour le checkout de Stripe
    */
   async onCreateCheckoutSession({ user, checkoutConfig }) {
-    console.log("user", user);
     // on récupère les informations complète de l'utilisateur connecté
     const fullUser = await db()
       .collection("users")
@@ -64,7 +63,7 @@ module.exports = {
       case "checkout.session.completed":
         const session = event.data.object;
 
-        //console.log(JSON.stringify(session, 0, 2));
+        console.log(JSON.stringify(session, 0, 2));
 
         // On met à jour pour notre utilisateur, a minima:
         // - son id client chez Stripe

@@ -5,7 +5,7 @@ const adapter = require("./stripe.adapter");
 /**
  * @returns {object} - une instance configurée du client d'API stripe
  */
-function stripeApi() {
+function getStripe() {
   return stripe(config.stripeSecretKey);
 }
 
@@ -16,10 +16,10 @@ function stripeApi() {
 async function getPlans() {
   const plans = await Promise.all(
     config.prices.map((priceId) => {
-      return stripeApi()
+      return getStripe()
         .plans.retrieve(priceId)
         .then((plan) => {
-          return stripeApi()
+          return getStripe()
             .products.retrieve(plan.product)
             .then((product) => {
               plan.product = product;
@@ -61,7 +61,7 @@ async function createCheckoutSession({ user, priceId }) {
     priceId,
   });
 
-  const session = await stripeApi().checkout.sessions.create(checkoutConfig);
+  const session = await getStripe().checkout.sessions.create(checkoutConfig);
   return session;
 }
 
@@ -81,7 +81,7 @@ async function createCustomerPortalSession({ user }) {
 
   await adapter.onCreateCustomerPortalSession({ portalSessionConfig, user });
 
-  const portalsession = await stripeApi().billingPortal.sessions.create(
+  const portalsession = await getStripe().billingPortal.sessions.create(
     portalSessionConfig
   );
   return portalsession;
@@ -95,32 +95,18 @@ async function createCustomerPortalSession({ user }) {
  * @returns {object} - subscription
  */
 async function getSubcriptionInfos(subscriptionId) {
-  const subscription = await stripeApi().subscriptions.retrieve(subscriptionId);
+  const subscription = await getStripe().subscriptions.retrieve(subscriptionId);
   // on ajoute les infos du produit associé à cet abonnement
-  subscription.product = await stripeApi().products.retrieve(
+  subscription.product = await getStripe().products.retrieve(
     subscription.plan.product
   );
   return subscription;
 }
 
-/**
- *
- * @param {string} signature - webhook signature, récupérée depuis request.headers["stripe-signature"];
- */
-async function handleWebhooks({ signature }) {
-  const event = apiStripe().webhooks.constructEvent(
-    request.body,
-    signature,
-    config.stripeWebhookSecret
-  );
-  await adapter.onWehbooks({ event });
-}
-
 module.exports = {
-  stripeApi,
+  getStripe,
   getPlans,
   getSubcriptionInfos,
   createCheckoutSession,
   createCustomerPortalSession,
-  handleWebhooks,
 };
