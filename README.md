@@ -6,9 +6,9 @@ Vous pouvez soit:
 
 - Partir de ce projet pour vous en servir de base pour créer votre propre SaaS. Il fonctionnel tel quel, avec une gestion des utilisateurs embarquée (basé sur JWT)
 
-- Récupérer et adapter la partie stripe pour ajouter les abonnements à un projet existant.
+- Récupérer et adapter le module stripe pour ajouter les abonnements à un projet Node existant.
 
-## getting started
+## Getting started
 
 Pour que la démo fonctionne, vous devez avoir préalablement:
 
@@ -36,6 +36,16 @@ cp .env.example .env.local
 npm run dev
 ```
 
+### Architecture du module "./src/stripe"
+
+Le code est découplé pour pouvoir s'adapter aussi facilement que possible à n'importe quel projet existant.
+
+📝 stripe.routes.js - les routes de l'API REST. Avec Express, libre à vous de l'adapter à un autre serveur HTTP.
+📝 stripe.controller.js - les fonctions exécutées par les routes
+📝 stripe.service.js - les fonctions métiers (récupération des plans, de l'abonnement en cours etc), appelé par le controller.
+📝 stripe.adapter.js - le fichier a modifier pour adapter le module a un projet existant: c'est ici que vous devrez mettre votre code custom.
+📝 stripe.config.js - configuration
+
 ### Fonctionnement global
 
 Le starter crée principalement 5 routes d'API REST exploitables par n'importe quel front-end (le dossier `front` contient un exemple de client en Vue.js):
@@ -50,23 +60,9 @@ Le starter crée principalement 5 routes d'API REST exploitables par n'importe q
 
 - `/api/userinfo` : si l'utilisateur est connecté, ce endpoint renvoie toutes les données de la table utilisateur, dont les données complètes concernant son abonnement dans une clef `subscription`
 
-### Worflow entre front-end et back-end
+### Le fichier ./src/stripe/stripe.adapter.js
 
-Si vous souhaitez comprendre le workflow de données entre front-end, back-end et Stripe, regardez le schéma dans le dossier `./docs/schema-worfklow.pdf`
-
-### Comment adapter le code à un projet existant
-
-Si vous avez votre propre base de données et votre propre système de gestion des utilisateurs, vous pouvez tout de même ajouter rapidement la gestion des paiements en récupérant le dossier `stripe` de ce starter. Puis, sur votre projet:
-
-- Installer stripe `npm install stripe`
-- Ajouter les variables d'environnement du fichier `.env.example` dont le nom commence par `STRIPE_`
-- Modifier la config du fichier `src/stripe/stripe.config.js` à votre guise.
-- branchez les routes du fichier à votre application: `src/stripe/routes.js`
-- Modifier le fichier `src/stripe/stripe.adapter.js` pour personnaliser votre code métier aux endroits adequats.
-
-#### Le fichier `./src/stripe/adapter.js`\*\*
-
-Il contient des fonctions qui sont appelées automatiquement aux moments clefs: c'est l'endroit pour mettre votre code personnalisé qui va faire la glue entre Stripe et votre base de données.
+Si vous récupérez le module Stripe pour l'adapter à un projet existant, vous aurez un seul fichier à modifier pour personnaliser le code: `./src/stripe/stripe.adapter.js` . Il fait la glue entre Stripe et votre base de données aux moments clefs.
 
 1. **`onCreateCheckoutSession()`** (appelé par `src/stripe/controllers/create-checkout-session`):
 
@@ -121,7 +117,7 @@ if (event.type === "checkout.session.completed") {
 
 3. **onCreateCustomerPortalSession()** (appelé par `src/stripe/controllers/create-customer-portal-session`):
 
-Ici vous devez ajouter l'id client Stripe de votre user, pour permettre à Stripe de générer un lien d'accès au portal client que pourra utiliser votre front-end. Exemple:
+Ici vous devez ajouter à la configuration **l'id client Stripe** de votre user, pour permettre à Stripe de générer un lien d'accès au portail client que pourra utiliser votre front-end. Exemple:
 
 ```js
   async onCreateCustomerPortalSession({ user, portalSessionConfig }) {
@@ -131,6 +127,16 @@ Ici vous devez ajouter l'id client Stripe de votre user, pour permettre à Strip
     portalSessionConfig.customerId = fullUser.stripeCustomerId;
   }
 ```
+
+### Comment adapter le code à un projet existant
+
+Si vous avez votre propre base de données et votre propre système de gestion des utilisateurs, vous pouvez tout de même ajouter rapidement la gestion des paiements en récupérant le dossier `stripe` de ce starter. Puis, sur votre projet:
+
+- Installer stripe `npm install stripe`
+- Ajouter les variables d'environnement du fichier `.env.example` dont le nom commence par `STRIPE_`
+- Modifier la config du fichier `src/stripe/stripe.config.js` à votre guise.
+- branchez les routes du fichier à votre application: `src/stripe/routes.js`
+- Modifier le fichier `src/stripe/stripe.adapter.js` pour personnaliser votre code métier aux endroits adequats.
 
 ### Configurer Stripe
 
@@ -160,6 +166,10 @@ Le starter crée automatiquement un tunnel vers votre localhost pour vous avec `
 Vous devez configurer sur cette page d'administration les plans qui apparaitront sur le portail Client: (il sera possible d'upgrader / downgrader un abonnement vers les plans sélectionnés)
 
 https://dashboard.stripe.com/test/settings/billing/portal
+
+### Worflow entre front-end et back-end
+
+Si vous souhaitez comprendre le workflow de données entre front-end, back-end et Stripe, regardez le schéma dans le dossier `./docs/schema-worfklow.pdf`
 
 ## Erreurs fréquentes
 
