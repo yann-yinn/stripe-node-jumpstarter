@@ -76,7 +76,6 @@ async function createCustomerPortalSession({ user }) {
   // qu'il a fini de gérer son abonnement, par exemple son compte.
   const returnUrl = config.stripeBillingReturnUrl;
   const portalSessionConfig = {
-    customer: undefined,
     return_url: returnUrl,
   };
 

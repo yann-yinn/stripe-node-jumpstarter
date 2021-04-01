@@ -11,7 +11,7 @@ async function getDefinedRoutes() {
   var route,
     routes = [];
   const app = await init();
-  app.use(require("../stripe/routes"));
+  app.use(require("../stripe/stripe.routes"));
   app.use(require("../routes"));
   app._router.stack.forEach(function (middleware) {
     if (middleware.route) {
