@@ -1,0 +1,19 @@
+{
+  "name": "node-stripe-starter-documentation",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "authors": {
+    "name": "Yann",
+    "email": "yann.boisselier@hey.com"
+  },
+  "repository": "/Node Stripe Starter documentation",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  }
+}
