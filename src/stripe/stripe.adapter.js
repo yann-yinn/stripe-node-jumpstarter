@@ -1,25 +1,29 @@
 const oid = require("mongodb").ObjectID;
 const { db } = require("../utils/db");
 
+/**
+ * Ces fonctions sont appelés lors d'évènements spécifiques du module Stripe
+ * pour faire la glue entre Stripe et votre propre base de données
+ */
 module.exports = {
   /**
-   * @param {Object} arguments
-   * @param {Object} arguments.req - l'objet http request du controller
-   * @param {Object} arguments.checkoutConfig - la configuration pour le checkout de Stripe
+   * @param {Object} options
+   * @param {Object} options.user - objet user complet
+   * @param {Object} options.checkoutConfig - la configuration pour le checkout de Stripe
    */
-  async onCreateCheckoutSession({ req, checkoutConfig }) {
+  async onCreateCheckoutSession({ user, checkoutConfig }) {
     // on récupère les informations complète de l'utilisateur connecté
     const fullUser = await db()
       .collection("users")
-      .findOne({ _id: oid(req.user.id) });
+      .findOne({ _id: oid(user._id) });
     const customerId = fullUser.stripeCustomerId;
 
     /**
-     * propriété "customer"
+     * propriété "customer":
      *
      * Si on a déjà un customerId stripe pour le user qui passe commande,
      * on doit le renseigner ici pour que Stripe reconnaisse le client
-     * et ne crée pas un nouveau compte client à chaque nouvelle commande.
+     * et ne crée pas un nouveau compte client pour cet utilisateur.
      */
     if (customerId) {
       checkoutConfig.customer = customerId;
@@ -33,7 +37,7 @@ module.exports = {
      * Ainsi, dans le webhook "checkout.session.completed", vous pourrez
      * retrouver votre id utilisateur local en inspectant la clef session.client_reference_id
      */
-    checkoutConfig.client_reference_id = req.user.id;
+    checkoutConfig.client_reference_id = user._id;
 
     /**
      * propriété "metadata"
@@ -58,8 +62,12 @@ module.exports = {
       // Le paiement est un succès et l'abonnement a été crée!
       case "checkout.session.completed":
         const session = event.data.object;
-        // console.log(JSON.stringify(session, 0, 2));
 
+        //console.log(JSON.stringify(session, 0, 2));
+
+        // On met à jour pour notre utilisateur, a minima:
+        // - son id client chez Stripe
+        // - l'id de l'abonnement
         await db()
           .collection("users")
           .updateOne(
@@ -78,7 +86,6 @@ module.exports = {
        * Un abonnement a été upgradé ou downgradé
        */
       case "customer.subscription.updated":
-        const subscriptionUpdated = event.data.object;
         break;
 
       /**
@@ -107,17 +114,19 @@ module.exports = {
   },
 
   /**
-   * étape 3 - pour que votre utilisateur puisse accéder au "Customer portal"
+   * étape 3 - pour que votre utilisateur puisse accéder au "Customer portal",
+   * il faut récupérer son id client (customer id) et le passer à la config
+   * du portail client !
    *
-   * @param {Object} arguments
-   * @param {Object} arguments.req - l'objet http request du controller
+   * @param {Object} options
+   * @param {Object} options.user - l'objet user complet
    * @return {String} customerId - l'id client Stripe pour générer l'url vers le portail client
    */
-  async onCreateCustomerPortalSession({ req }) {
+  async onCreateCustomerPortalSession({ user, portalSessionConfig }) {
     const fullUser = await db()
       .collection("users")
-      .findOne({ _id: oid(req.user.id) });
-    customerId = fullUser.stripeCustomerId;
-    return customerId;
+      .findOne({ _id: oid(user.id) });
+
+    portalSessionConfig.customerId = fullUser.stripeCustomerId;
   },
 };

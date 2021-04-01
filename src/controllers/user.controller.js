@@ -1,9 +1,8 @@
 const { db } = require("../utils/db");
 const oid = require("mongodb").ObjectID;
-const config = require("../stripe/config");
-const stripe = require("stripe")(config.stripeSecretKey);
+const stripeService = require("../stripe/stripe.service");
 
-module.exports = async (req, res) => {
+async function userInfo(req, res) {
   // récupérer le user complet depuis la base de données
   const fullUser = await db()
     .collection("users")
@@ -12,12 +11,8 @@ module.exports = async (req, res) => {
   // récupérer depuis Stripe les données concernant l'abonnement de cet utilisateur
   let subscription = null;
   if (fullUser.stripeSubscriptionId) {
-    subscription = await stripe.subscriptions.retrieve(
+    subscription = stripeService.getSubcriptionInfos(
       fullUser.stripeSubscriptionId
-    );
-    // on ajoute les infos du produit associé à cet abonnement
-    subscription.product = await stripe.products.retrieve(
-      subscription.plan.product
     );
   }
 
@@ -27,4 +22,8 @@ module.exports = async (req, res) => {
     username: fullUser.username,
     subscription,
   });
+}
+
+module.exports = {
+  userInfo,
 };
