@@ -3,9 +3,9 @@ const stripe = require("stripe");
 const adapter = require("./stripe.adapter");
 
 /**
- * @returns {object} - une instance du client d'API de stripe
+ * @returns {object} - une instance configurée du client d'API stripe
  */
-function getStripe() {
+function stripeApi() {
   return stripe(config.stripeSecretKey);
 }
 
@@ -16,10 +16,10 @@ function getStripe() {
 async function getPlans() {
   const plans = await Promise.all(
     config.prices.map((priceId) => {
-      return getStripe()
+      return stripeApi()
         .plans.retrieve(priceId)
         .then((plan) => {
-          return getStripe()
+          return stripeApi()
             .products.retrieve(plan.product)
             .then((product) => {
               plan.product = product;
@@ -61,7 +61,7 @@ async function createCheckoutSession({ user, priceId }) {
     priceId,
   });
 
-  const session = await getStripe().checkout.sessions.create(checkoutConfig);
+  const session = await stripeApi().checkout.sessions.create(checkoutConfig);
   return session;
 }
 
@@ -79,9 +79,9 @@ async function createCustomerPortalSession({ user }) {
     return_url: returnUrl,
   };
 
-  await adapter.onCreateCustomerPortalSession({ portalSessionConfig });
+  await adapter.onCreateCustomerPortalSession({ portalSessionConfig, user });
 
-  const portalsession = await stripe.billingPortal.sessions.create(
+  const portalsession = await stripeApi().billingPortal.sessions.create(
     portalSessionConfig
   );
   return portalsession;
@@ -91,21 +91,20 @@ async function createCustomerPortalSession({ user }) {
  * Récupérer les infos complètes d'une subscription, avec
  * les informations du produit associé.
  *
- * @param {object} options
- * @param {string} options.subscriptionId
+ * @param {string} subscriptionId
  * @returns {object} - subscription
  */
-async function getSubcriptionInfos({ subscriptionId }) {
-  subscription = await stripe.subscriptions.retrieve(subscriptionId);
+async function getSubcriptionInfos(subscriptionId) {
+  const subscription = await stripeApi().subscriptions.retrieve(subscriptionId);
   // on ajoute les infos du produit associé à cet abonnement
-  subscription.product = await stripe.products.retrieve(
+  subscription.product = await stripeApi().products.retrieve(
     subscription.plan.product
   );
   return subscription;
 }
 
 module.exports = {
-  getStripe,
+  stripeApi,
   getPlans,
   getSubcriptionInfos,
   createCheckoutSession,

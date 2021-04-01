@@ -6,7 +6,7 @@ const adapter = require("./stripe.adapter");
  * Récupérer la liste des plans spécifiées dans stripe.config.js
  */
 async function plans(req, res) {
-  await stripeService.getPlans();
+  const plans = await stripeService.getPlans();
   res.send({ plans });
 }
 
@@ -36,7 +36,7 @@ async function createCheckoutSession(req, res) {
  * Voir https://stripe.com/docs/billing/subscriptions/customer-portal
  */
 async function createCustomerPortalSession(req, res) {
-  const portalSession = stripeService.createCustomerPortalSession({
+  const portalSession = await stripeService.createCustomerPortalSession({
     user: req.user,
   });
   res.send(portalSession);

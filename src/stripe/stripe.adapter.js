@@ -119,6 +119,6 @@ module.exports = {
     const fullUser = await db()
       .collection("users")
       .findOne({ _id: oid(user.id) });
-    portalSessionConfig.customerId = fullUser.stripeCustomerId;
+    portalSessionConfig.customer = fullUser.stripeCustomerId;
   },
 };

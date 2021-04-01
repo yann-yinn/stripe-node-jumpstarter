@@ -120,8 +120,9 @@ export default {
     },
     planIsSelected(plan) {
       let result = false;
+      console.log("this.user.subscription)", this.user.subscription);
       if (this.user.subscription) {
-        result = this.user.subscription.plan.id === plan.id;
+        //result = this.user.subscription.plan.id === plan.id;
       }
       return result;
     },

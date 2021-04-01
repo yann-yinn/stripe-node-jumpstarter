@@ -26,7 +26,7 @@
                 for="username"
                 class="block text-sm font-medium text-gray-700 text-left"
               >
-                Username
+                Username or Email
               </label>
               <div class="mt-1">
                 <input

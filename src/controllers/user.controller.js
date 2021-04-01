@@ -11,7 +11,7 @@ async function userInfo(req, res) {
   // récupérer depuis Stripe les données concernant l'abonnement de cet utilisateur
   let subscription = null;
   if (fullUser.stripeSubscriptionId) {
-    subscription = stripeService.getSubcriptionInfos(
+    subscription = await stripeService.getSubcriptionInfos(
       fullUser.stripeSubscriptionId
     );
   }
