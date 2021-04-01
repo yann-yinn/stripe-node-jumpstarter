@@ -4,7 +4,7 @@ Démarrez rapidement un SaaS avec Node.js et Stripe.
 
 Vous pouvez soit:
 
-- Partir de ce projet pour vous en servir de base pour créer votre propre SaaS. Il fonctionnel tel quel, avec une gestion des utilisateurs embarqués.
+- Partir de ce projet pour vous en servir de base pour créer votre propre SaaS. Il fonctionnel tel quel, avec une gestion des utilisateurs embarquée (basé sur JWT)
 
 - Récupérer et adapter la partie stripe pour ajouter les abonnements à un projet existant.
 
@@ -14,7 +14,7 @@ Pour que la démo fonctionne, vous devez avoir préalablement:
 
 - Crée un compte Stripe et l'avoir configuré entièrement (voir section "Configurer Stripe en détails")
 
-- Avoir créer une base de données mongodb. Vous pouvez par exemple créer une base de donnée en ligne sur [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+- Avoir créer une base de données mongodb. Vous pouvez créer une base de donnée en ligne sur [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 
 ### installation du code de la démo
 
@@ -40,7 +40,7 @@ npm run dev
 
 Le starter crée principalement 5 routes d'API REST exploitables par n'importe quel front-end (le dossier `front` contient un exemple de client en Vue.js):
 
-- `/api/stripe/plans`: récupére la liste des plans tarifaires à afficher, dont les ids sont spécifiés par la variable d'env `STRIPE_PRICE_IDS`
+- `/api/stripe/plans`: récupére la liste des plans tarifaires à afficher, dont les ids sont spécifiés par la variable d'env `STRIPE_PRICE_IDS`.
 
 - `/api/stripe/create-checkout-session`: Commencer un nouveau processus d'achat en créant une nouvelle session Stripe.
 
@@ -48,25 +48,25 @@ Le starter crée principalement 5 routes d'API REST exploitables par n'importe q
 
 - `/api/stripe/create-customer-portal-session` : Ce endpoint créer une url unique qui permettra au client de gérer ses factures, abonnements, moyens de paiement sur le (portail client)[https://stripe.com/docs/billing/subscriptions/customer-portal] de Stripe
 
-- `/api/userinfo` : si l'utilisateur est connecté, ce endpoint renvoie toutes les données de la table utilisateur, dont les données complètes concernant son abonnement.
+- `/api/userinfo` : si l'utilisateur est connecté, ce endpoint renvoie toutes les données de la table utilisateur, dont les données complètes concernant son abonnement dans une clef `subscription`
 
 ### Worflow entre front-end et back-end
 
-Pour comprendre l'interfaction entre front-end et back-end, regardez le schéma dans le dossier `./docs/schema-worfklow.pdf` inclus dans ce starter.
+Si vous souhaitez comprendre le workflow de données entre front-end, back-end et Stripe, regardez le schéma dans le dossier `./docs/schema-worfklow.pdf`
 
 ### Comment adapter le code à un projet existant
 
-Si vous avez votre propre base de données et votre propre système de gestion des utilisateurs, vous pouvez tout de même ajouter rapidement la gestion des paiements en récupérant le dossier `stripe` de ce starter. Sur votre projet:
+Si vous avez votre propre base de données et votre propre système de gestion des utilisateurs, vous pouvez tout de même ajouter rapidement la gestion des paiements en récupérant le dossier `stripe` de ce starter. Puis, sur votre projet:
 
 - Installer stripe `npm install stripe`
 - Ajouter les variables d'environnement du fichier `.env.example` dont le nom commence par `STRIPE_`
-- Modifier la config du fichier `src/stripe/config.js` à votre guise.
+- Modifier la config du fichier `src/stripe/stripe.config.js` à votre guise.
 - branchez les routes du fichier à votre application: `src/stripe/routes.js`
-- Modifier le fichier `src/stripe/adapter.js` pour personnaliser votre code métier.
+- Modifier le fichier `src/stripe/stripe.adapter.js` pour personnaliser votre code métier aux endroits adequats.
 
 #### Le fichier `./src/stripe/adapter.js`\*\*
 
-Il contient des fonctions qui sont appelés automatiquement par les controllers: c'est l'endroit pour mettre votre code personnalisé qui va faire la glue entre Stripe et votre base de données.
+Il contient des fonctions qui sont appelées automatiquement aux moments clefs: c'est l'endroit pour mettre votre code personnalisé qui va faire la glue entre Stripe et votre base de données.
 
 1. **`onCreateCheckoutSession()`** (appelé par `src/stripe/controllers/create-checkout-session`):
 
@@ -87,7 +87,7 @@ if (currentUser.customerId) {
 
 2. **`onWehbooks()`** (appelé par `src/stripe/controllers/webhooks`):
 
-Méthode Appelée lors des évènements clefs de Stripe.
+Méthode Appelée lors des évènements clefs chez Stripe.
 
 On va prioritairement traiter l'évènement `checkout.session.completed` qui est appelé quand le processus d'abonnement se termine avec succès.
 
@@ -121,16 +121,15 @@ if (event.type === "checkout.session.completed") {
 
 3. **onCreateCustomerPortalSession()** (appelé par `src/stripe/controllers/create-customer-portal-session`):
 
-Ici vous devez simplement retourner l'id client Stripe depuis votre base de données, qui va permettre à Stripe de générer un lien d'accès au portal client que pourra utiliser votre front-end. Exemple:
+Ici vous devez ajouter l'id client Stripe de votre user, pour permettre à Stripe de générer un lien d'accès au portal client que pourra utiliser votre front-end. Exemple:
 
 ```js
-  async onCreateCustomerPortalSession({ req }) {
+  async onCreateCustomerPortalSession({ user, portalSessionConfig }) {
     const fullUser = await db()
       .collection("users")
-      .findOne({ _id: oid(req.user.id) });
-    customerId = fullUser.stripeCustomerId;
-    return customerId;
-  },
+      .findOne({ _id: oid(user._id) });
+    portalSessionConfig.customerId = fullUser.stripeCustomerId;
+  }
 ```
 
 ### Configurer Stripe
