@@ -1,4 +1,4 @@
-const config = require("./config");
+const config = require("./stripe.config");
 const stripe = require("stripe");
 const adapter = require("./stripe.adapter");
 

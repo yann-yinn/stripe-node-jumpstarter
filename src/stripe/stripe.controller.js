@@ -1,6 +1,6 @@
-const config = require("../config");
+const config = require("./stripe.config");
 const stripeService = require("./stripe.service");
-const adapter = require("../adapter");
+const adapter = require("./stripe.adapter");
 
 /**
  * Récupérer la liste des plans spécifiées dans stripe.config.js
