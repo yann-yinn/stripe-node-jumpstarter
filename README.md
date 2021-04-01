@@ -1,3 +1,3 @@
 # Stripe Node Starter
 
-La documentation se trouve dans le fichier `./docs/src/index.md`
+La documentation se trouve dans le fichier `./docs/src/`
