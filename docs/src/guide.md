@@ -136,13 +136,21 @@ Ici vous devez ajouter à la configuration **l'id client Stripe** de votre user,
 
 ### Comment adapter le code à un projet existant
 
-Si vous avez votre propre base de données et votre propre système de gestion des utilisateurs, vous pouvez tout de même ajouter rapidement la gestion des paiements en récupérant le dossier `stripe` de ce starter. Puis, sur votre projet:
+Récupérez le dossier `stripe` de ce starter. Puis, sur votre projet Node.
 
-1. Installer stripe `npm install stripe`
+1. Installer le module stripe `npm install stripe`
 2. Ajouter les variables d'environnement du fichier `.env.example` dont le nom commence par `STRIPE_`
 3. Modifier la config du fichier `src/stripe/stripe.config.js` à votre guise.
 4. branchez les routes du fichier `src/stripe/routes.js` à votre application
 5. Modifier le fichier `src/stripe/stripe.adapter.js` pour personnaliser votre code métier aux endroits adequats et faire la glue avec votre base de donnée.
+
+Vous pouvez maintenant interroger l'API depuis votre front-end. Le schéma ci-dessous peut vous aider à comprendre quels appels le front-end doit effectuer:
+
+#### Worflow entre front-end, back-end et Stripe
+
+Ce schéma représente le processus d'échanges de données entre le front-end, le back-end et Stripe.
+
+<img src="/schema-workflow.png" />
 
 ### Configurer Stripe
 
@@ -172,12 +180,6 @@ Le starter crée automatiquement un tunnel vers votre localhost pour vous avec `
 Vous devez configurer sur cette page d'administration les plans qui apparaitront sur le portail Client: (il sera possible d'upgrader / downgrader un abonnement vers les plans sélectionnés)
 
 [https://dashboard.stripe.com/test/settings/billing/portal](https://dashboard.stripe.com/test/settings/billing/portal)
-
-### Worflow entre front-end et back-end
-
-Ce schéma représente le processus d'échanges de données entre le front-end, le back-end et Stripe.
-
-<img src="/schema-workflow.png" />
 
 ## Erreurs fréquentes
 
