@@ -49,17 +49,20 @@ async function createCustomerPortalSession(req, res) {
  * C'est l'endroit idéal pour mettre à jour votre utilisateur
  * avec les infos de son abonnement (status de l'abonnement, id client Stripe)
  */
-async function webhooks(request, response) {
-  const signature = request.headers["stripe-signature"];
-  const event = stripeService
-    .getStripe()
-    .webhooks.constructEvent(
-      request.body,
-      signature,
-      config.stripeWebhookSecret
-    );
-  await adapter.onWehbooks({ event });
-  response.sendStatus(200);
+async function webhooks(req, res) {
+  const signature = req.headers["stripe-signature"];
+  try {
+    const event = stripeService
+      .getStripe()
+      .webhooks.constructEvent(req.body, signature, config.stripeWebhookSecret);
+    await adapter.onWehbooks({ event });
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e); // on veut voir cette erreur dans le terminal
+    res.status(500).send({
+      error: e.message,
+    });
+  }
 }
 
 module.exports = {

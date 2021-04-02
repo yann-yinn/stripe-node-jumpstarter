@@ -63,7 +63,9 @@ module.exports = {
       case "checkout.session.completed":
         const session = event.data.object;
 
-        console.log(JSON.stringify(session, 0, 2));
+        if (process.env.NODE_ENV === "development") {
+          console.log(JSON.stringify(session, 0, 2));
+        }
 
         // On met à jour pour notre utilisateur, a minima:
         // - son id client chez Stripe
