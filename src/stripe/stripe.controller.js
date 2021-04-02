@@ -10,6 +10,7 @@ async function plans(req, res) {
     const plans = await stripeService.getPlans();
     res.send({ plans });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ error: error.message });
   }
 }
@@ -34,6 +35,7 @@ async function createCheckoutSession(req, res) {
       sessionId: session.id,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ error: error.message });
   }
 }
@@ -50,6 +52,7 @@ async function createCustomerPortalSession(req, res) {
     });
     res.send(portalSession);
   } catch (error) {
+    console.log(error);
     res.status(500).send({ error: error.message });
   }
 }
@@ -62,19 +65,17 @@ async function createCustomerPortalSession(req, res) {
  * avec les infos de son abonnement (status de l'abonnement, id client Stripe)
  */
 async function webhooks(req, res) {
-  const signature = req.headers["stripe-signature"];
   try {
+    const signature = req.headers["stripe-signature"];
     const event = stripeService
       .getStripe()
       .webhooks.constructEvent(req.body, signature, config.stripeWebhookSecret);
     await adapter.onWehbooks({ event });
-    // Dire à Stripe que tout s'est bien passé.
+    // Indiquer à Stripe que tout s'est bien passé.
     res.sendStatus(200);
-  } catch (e) {
-    console.log(e); // on veut voir cette erreur dans le terminal
-    res.status(500).send({
-      error: e.message,
-    });
+  } catch (error) {
+    console.log(e);
+    res.status(500).send({ error: e.message });
   }
 }
 
