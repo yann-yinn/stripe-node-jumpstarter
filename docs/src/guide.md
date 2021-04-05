@@ -158,12 +158,16 @@ Ce schéma représente le processus d'échanges de données entre le front-end, 
 
 **2 - Se rendre sur [https://dashboard.stripe.com/test/products](https://dashboard.stripe.com/test/products) pour ajouter des abonnements et leur tarifs sur l'environnement de test.** Exemple:
 
-- Un produit "Basic" avec:
+- Créer un produit "Basic" avec:
   - un plan tarifaire mensuel à 9€/mois
   - un plan tarifaire annuel à 90€/an
-- Un produit premium avec:
+- Créer un Un produit premium avec:
   - un plan mensuel à 19€/mois
-  - un plan annuel à €190/an
+  - un plan annuel à 190€/an
+
+Après avoir créé les plans, enregistrez les ID de prix afin de pouvoir les utiliser dans les étapes suivantes. La section tarification du produit affiche chaque ID et l'ID ressemble à ceci: `price_G0FvDp6vZvdwRZ.`
+
+Ce sont ces prix qu'il faudra renseigner pour la variable d'environnement `STRIPE_PRICE_IDS`
 
 **3 - Récupérer vos [clefs d'API](https://dashboard.stripe.com/test/apikeys)**
 
