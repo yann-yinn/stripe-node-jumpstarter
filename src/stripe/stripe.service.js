@@ -36,7 +36,7 @@ async function getPlans() {
  * @param {object} options
  * @param {object} options.user
  * @param {string} options.priceId
- * @returns {Promise<object>} Promise object represents the sum of a and b
+ * @returns {Promise<object>} A stripe session object
  */
 async function createCheckoutSession({ user, priceId }) {
   let checkoutConfig = {
