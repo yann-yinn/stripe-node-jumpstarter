@@ -17,4 +17,5 @@ module.exports = {
 
   // le lien de retour depuis le "Customer Portal" (gestion des abonnements en cours)
   stripeBillingReturnUrl: `${process.env.STRIPE_SITE_URL}/account`,
+  stripeTaxRateId: process.env.STRIPE_TAX_RATE_ID,
 };

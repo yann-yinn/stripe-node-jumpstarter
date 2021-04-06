@@ -11,7 +11,7 @@ module.exports = {
    * @param {Object} options.user - objet user complet
    * @param {Object} options.checkoutConfig - la configuration pour le checkout de Stripe
    */
-  async onCreateCheckoutSession({ user, checkoutConfig }) {
+  async oncreateCheckoutSession({ user, checkoutConfig }) {
     // on récupère les informations complète de l'utilisateur connecté
     const fullUser = await db()
       .collection("users")

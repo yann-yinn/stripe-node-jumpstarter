@@ -55,6 +55,11 @@ async function createCheckoutSession({ user, priceId }) {
     cancel_url: config.stripeCheckoutCancelUrl,
   };
 
+  // ajouter la TVA, si définie
+  if (config.stripeTaxRateId) {
+    checkoutConfig.default_tax_rates = [config.stripeTaxRateId];
+  }
+
   await adapter.onCreateCheckoutSession({
     user,
     checkoutConfig,
