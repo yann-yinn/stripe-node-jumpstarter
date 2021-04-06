@@ -60,6 +60,15 @@ async function createCheckoutSession({ user, priceId }) {
     checkoutConfig.default_tax_rates = [config.stripeTaxRateId];
   }
 
+  // ajouter le coupon de réduction
+  if (config.stripePromoId) {
+    checkoutConfig.discounts = [
+      {
+        coupon: [config.stripePromoId],
+      },
+    ];
+  }
+
   await adapter.onCreateCheckoutSession({
     user,
     checkoutConfig,
