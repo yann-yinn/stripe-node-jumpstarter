@@ -51,16 +51,14 @@ async function createCheckoutSession({ user, priceId }) {
     mode: "subscription",
     payment_method_types: ["card"],
     line_items: [lineItem],
+    allow_promotion_codes: true,
+    // "auto" or "required"
+    billing_address_collection: "auto",
     // en cas de succès du paiement, le visiteur sera redirigé à cette adresse:
     success_url: config.stripeCheckoutSuccessUrl,
     // en cas d'annulation du paiement, rediriger le visiteur à cette adresse:
     cancel_url: config.stripeCheckoutCancelUrl,
   };
-
-  // ajouter le coupon de réduction
-  if (config.stripeCheckoutAllowPromotionCodes) {
-    checkoutConfig.allow_promotion_codes = true;
-  }
 
   await adapter.onCreateCheckoutSession({
     user,

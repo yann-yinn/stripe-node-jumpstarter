@@ -22,8 +22,4 @@ module.exports = {
 
   // voir le fichier .env.example
   stripeCheckoutTaxRateId: process.env.STRIPE_TAX_RATE_ID,
-
-  // autoriser l'utilisateur à rentrer manuellement un code promo sur
-  // la page du checkout
-  stripeCheckoutAllowPromotionCodes: true,
 };
