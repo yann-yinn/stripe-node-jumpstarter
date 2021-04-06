@@ -1,5 +1,5 @@
 /**
- * @file gérer la configuration de votre gestion des abonnements:
+ * @file gérer la configuration de votre gestion des abonnements
  */
 module.exports = {
   // voir le fichier.env.example
@@ -20,9 +20,10 @@ module.exports = {
   // le lien de retour depuis le "Customer Portal" (gestion des abonnements en cours)
   stripeBillingReturnUrl: `${process.env.STRIPE_SITE_URL}/account`,
 
-  // Taxe à appliquer à sur l'abonnement
-  stripeTaxRateId: process.env.STRIPE_TAX_RATE_ID,
+  // voir le fichier .env.example
+  stripeCheckoutTaxRateId: process.env.STRIPE_TAX_RATE_ID,
 
-  // autoriser l'utilisateur à rentrer manuellement un code promo
-  allowPromotionCodes: true,
+  // autoriser l'utilisateur à rentrer manuellement un code promo sur
+  // la page du checkout
+  stripeCheckoutAllowPromotionCodes: true,
 };

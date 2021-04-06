@@ -1,7 +1,7 @@
 const express = require("express");
 
 /**
- * Serve a static app, like a Vue.js or a React app.
+ * Serve a static app with express, like a Vue.js or a React app.
  *
  * @param {Object} app - express app
  * @param {String} path - path to directory: example: "front/dist"

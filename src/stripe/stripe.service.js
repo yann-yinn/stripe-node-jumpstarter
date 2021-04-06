@@ -43,8 +43,8 @@ async function createCheckoutSession({ user, priceId }) {
     price: priceId,
     quantity: 1,
   };
-  if (config.stripeTaxRateId) {
-    lineItem.tax_rates = [config.stripeTaxRateId];
+  if (config.stripeCheckoutTaxRateId) {
+    lineItem.tax_rates = [config.stripeCheckoutTaxRateId];
   }
 
   let checkoutConfig = {
@@ -58,7 +58,7 @@ async function createCheckoutSession({ user, priceId }) {
   };
 
   // ajouter le coupon de réduction
-  if (config.allowPromotionCodes) {
+  if (config.stripeCheckoutAllowPromotionCodes) {
     checkoutConfig.allow_promotion_codes = true;
   }
 
