@@ -11,7 +11,7 @@ async function plans(req, res) {
     res.send({ plans });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error: error.message });
+    res.status(500).send({ error: "Server error" });
   }
 }
 
@@ -36,7 +36,7 @@ async function createCheckoutSession(req, res) {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error: error.message });
+    res.status(500).send({ error: "Server error" });
   }
 }
 
@@ -53,7 +53,7 @@ async function createCustomerPortalSession(req, res) {
     res.send(portalSession);
   } catch (error) {
     console.log(error);
-    res.status(500).send({ error: error.message });
+    res.status(500).send({ error: "Server error" });
   }
 }
 
@@ -75,7 +75,7 @@ async function webhooks(req, res) {
     res.sendStatus(200);
   } catch (error) {
     console.log(e);
-    res.status(500).send({ error: e.message });
+    res.status(500).send({ error: "Server error" });
   }
 }
 

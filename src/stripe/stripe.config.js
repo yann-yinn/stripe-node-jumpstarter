@@ -22,4 +22,7 @@ module.exports = {
 
   // voir le fichier .env.example
   stripeCheckoutTaxRateId: process.env.STRIPE_TAX_RATE_ID,
+
+  // offrir un essai gratuit de x jours avant prélèvement.
+  stripeTrialPeriodDays: 0,
 };

@@ -51,14 +51,19 @@ async function createCheckoutSession({ user, priceId }) {
     mode: "subscription",
     payment_method_types: ["card"],
     line_items: [lineItem],
+    // autoriser les codes promotions
     allow_promotion_codes: true,
-    // "auto" or "required"
-    billing_address_collection: "auto",
     // en cas de succès du paiement, le visiteur sera redirigé à cette adresse:
     success_url: config.stripeCheckoutSuccessUrl,
     // en cas d'annulation du paiement, rediriger le visiteur à cette adresse:
     cancel_url: config.stripeCheckoutCancelUrl,
+    subscription_data: {},
   };
+
+  if (config.stripeTrialPeriodDays) {
+    checkoutConfig.subscription_data.trial_period_days =
+      config.stripeTrialPeriodDays;
+  }
 
   await adapter.onCreateCheckoutSession({
     user,
