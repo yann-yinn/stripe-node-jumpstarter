@@ -4,8 +4,10 @@
 module.exports = {
   // voir le fichier.env.example
   prices: process.env.STRIPE_PRICES_IDS.split(",").map((v) => v.trim()),
+
   // voir le fichier .env.example
   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+
   // voir le fichier .env.example
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
 
@@ -17,7 +19,10 @@ module.exports = {
 
   // le lien de retour depuis le "Customer Portal" (gestion des abonnements en cours)
   stripeBillingReturnUrl: `${process.env.STRIPE_SITE_URL}/account`,
+
+  // Taxe à appliquer à sur l'abonnement
   stripeTaxRateId: process.env.STRIPE_TAX_RATE_ID,
-  stripePromoId: process.env.STRIPE_PROMO_ID,
+
+  // autoriser l'utilisateur à rentrer manuellement un code promo
   allowPromotionCodes: true,
 };
