@@ -96,6 +96,14 @@ module.exports = {
       case "customer.subscription.deleted":
         break;
 
+      /**
+       * Déclenché trois jours avant la fin d'une période d'essai.
+       * On peut par exemple envoyer un mail au client pour l'avertir
+       * que sa période gratuite se termine.
+       */
+      case "customer.subscription.trial_will_end":
+        break;
+
       case "invoice.payment_failed":
         // The payment failed or the customer does not have a valid payment method.
         // The subscription becomes past_due. Notify your customer and send them to the
