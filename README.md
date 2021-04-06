@@ -4,4 +4,7 @@ La documentation se trouve dans le fichier `./docs/src/` et en ligne à l'adress
 
 # Changelog
 
-06/04/2021: ajout de la TVA par défaut avec variable d'environnement `STRIPE_TAX_RATE_ID`
+06/04/2021
+
+- ajout possible d'une TVA fixe avec variable d'environnement `STRIPE_TAX_RATE_ID`
+- ajout de la possibilité de mettre un code promotionnel par défaut
