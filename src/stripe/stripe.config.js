@@ -19,4 +19,5 @@ module.exports = {
   stripeBillingReturnUrl: `${process.env.STRIPE_SITE_URL}/account`,
   stripeTaxRateId: process.env.STRIPE_TAX_RATE_ID,
   stripePromoId: process.env.STRIPE_PROMO_ID,
+  allowPromotionCodes: true,
 };

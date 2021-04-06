@@ -39,34 +39,27 @@ async function getPlans() {
  * @returns {Promise<object>} A stripe session object
  */
 async function createCheckoutSession({ user, priceId }) {
+  const lineItem = {
+    price: priceId,
+    quantity: 1,
+  };
+  if (config.stripeTaxRateId) {
+    lineItem.tax_rates = [config.stripeTaxRateId];
+  }
+
   let checkoutConfig = {
     mode: "subscription",
     payment_method_types: ["card"],
-    line_items: [
-      {
-        price: priceId,
-        // For metered billing, do not pass quantity
-        quantity: 1,
-      },
-    ],
+    line_items: [lineItem],
     // en cas de succès du paiement, le visiteur sera redirigé à cette adresse:
     success_url: config.stripeCheckoutSuccessUrl,
     // en cas d'annulation du paiement, rediriger le visiteur à cette adresse:
     cancel_url: config.stripeCheckoutCancelUrl,
   };
 
-  // ajouter la TVA, si définie
-  if (config.stripeTaxRateId) {
-    checkoutConfig.default_tax_rates = [config.stripeTaxRateId];
-  }
-
   // ajouter le coupon de réduction
-  if (config.stripePromoId) {
-    checkoutConfig.discounts = [
-      {
-        coupon: [config.stripePromoId],
-      },
-    ];
+  if (config.allowPromotionCodes) {
+    checkoutConfig.allow_promotion_codes = true;
   }
 
   await adapter.onCreateCheckoutSession({
