@@ -24,5 +24,5 @@ module.exports = {
   stripeCheckoutTaxRateId: process.env.STRIPE_TAX_RATE_ID,
 
   // offrir un essai gratuit de x jours avant prélèvement.
-  stripeTrialPeriodDays: 0,
+  stripeTrialPeriodDays: 14,
 };
