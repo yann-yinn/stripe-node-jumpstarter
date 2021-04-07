@@ -189,7 +189,7 @@ Vous devez configurer sur cette page d'administration les plans qui apparaitront
 
 Pour ajouter une TVA française, rendez-vous sur [https://dashboard.stripe.com/test/tax-rates](https://dashboard.stripe.com/test/tax-rates) et ajouter un taxe TVA "non-incluse" de 20%.
 
-Côté Node, L'id de cette taxe doit être renseigné par la variable d'environnement `STRIPE_TAX_RATE_ID`. Si renseignée, elle sera ajouté automatiquement sur l'abonnement.
+Côté Node, L'id de cette taxe doit être renseigné par la variable d'environnement `STRIPE_TVA_ID`. Si renseignée, elle sera ajouté automatiquement sur l'abonnement.
 
 ## Erreurs fréquentes
 

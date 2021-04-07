@@ -21,7 +21,7 @@ module.exports = {
   stripeBillingReturnUrl: `${process.env.STRIPE_SITE_URL}/account`,
 
   // voir le fichier .env.example
-  stripeCheckoutTaxRateId: process.env.STRIPE_TAX_RATE_ID,
+  stripeCheckoutTaxRateId: process.env.STRIPE_TVA_ID,
 
   // offrir un essai gratuit de x jours avant prélèvement.
   stripeTrialPeriodDays: 14,

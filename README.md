@@ -6,9 +6,9 @@ La documentation se trouve dans le fichier `./docs/src/` et en ligne à l'adress
 
 07/04/2021
 
-- ajout du mode trial et de l'evenement "trial_will_end"
+- ajout du mode trial et de l'evenement "trial_will_end". 14 jours par défaut pour la démo.
 
 06/04/2021
 
-- ajout possible d'une TVA fixe avec variable d'environnement `STRIPE_TAX_RATE_ID`
-- ajout de la possibilité de mettre un code promotionnel par défaut
+- Possible d'ajouter une TVA fixe avec la variable d'environnement `STRIPE_TVA_ID`
+- Possibilité de mettre un code promotionnel par défaut
