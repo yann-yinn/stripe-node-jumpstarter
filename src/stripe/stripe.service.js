@@ -39,10 +39,12 @@ async function getPlans() {
  * @returns {Promise<object>} A stripe session object
  */
 async function createCheckoutSession({ user, priceId }) {
+  // ligne de facturation pour notre abonnement
   const lineItem = {
     price: priceId,
     quantity: 1,
   };
+  // ajout de la TVA si présente
   if (config.stripeCheckoutTaxRateId) {
     lineItem.tax_rates = [config.stripeCheckoutTaxRateId];
   }
